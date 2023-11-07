@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Page</title>
+    <title>Data</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
+            overflow: hidden; /* Hide scrollbars */
         }
         .iframe-container {
             position: relative;
-            overflow: hidden;
             width: 100%;
             height: 490px; /* Set this to the desired visible height */
         }
@@ -22,25 +22,15 @@
             top: -610px; /* Offset the iframe to hide the top 610px */
             left: 0;
             width: 100%;
-            height: 1100px; /* Set this to the original height plus the offset */
+            height: calc(100% + 610px); /* Set this to the original height plus the offset */
             border: none;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Data Page</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="data.html">Data</a></li>
-                <!-- Add other navigation links here -->
-            </ul>
-        </nav>
-    </header>
+
     <main>
-        <h2>Embedded Content</h2>
-        <div class="iframe-container">
+                <div class="iframe-container">
             <iframe src="https://app.welltory.com/share?token=32e7f23741" 
                     frameborder="0" 
                     allowfullscreen>
@@ -48,7 +38,6 @@
             </iframe>
         </div>
     </main>
-    <footer>
-           </footer>
+ 
 </body>
 </html>
