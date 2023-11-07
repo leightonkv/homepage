@@ -21,6 +21,21 @@
   user-select: none;
 }
 
+    /* Add styles for the audio element */
+audio#random-music {
+    width: 50%; /* Set the width to 50% of its current size */
+    display: block; /* Ensure it's a block element to respect width */
+    margin: 0 auto; /* Center the player in the page */
+    margin-top: 20px; /* Add some space above the player */
+}
+
+/* Add styles for track controls for better spacing and alignment */
+.track-controls {
+    text-align: center; /* Center the buttons */
+    margin-bottom: 20px; /* Add some space below the buttons */
+}
+
+
 </style>
 </head>
 <body>
@@ -36,6 +51,9 @@
   <div id="track-info">
       </div>
   <button class="track-control" onclick="nextTrack()">>> A Different Tune</button>
+<audio id="audio-player" controls>
+    Your browser does not support the audio element.
+  </audio>
 </div>
     
         <script>
