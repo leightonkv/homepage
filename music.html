@@ -1877,8 +1877,13 @@ function setTrack(index) {
 }
 
 function nextTrack() {
-    setTrack(currentTrackIndex + 1);
+    // Select a random index from the mp3Files array
+    var randomIndex = Math.floor(Math.random() * mp3Files.length);
+
+    // Set the track to the randomly selected index
+    setTrack(randomIndex);
 }
+
 
 function previousTrack() {
     setTrack(currentTrackIndex - 1);
