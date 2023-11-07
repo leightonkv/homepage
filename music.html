@@ -38,21 +38,23 @@ audio#random-music {
     #audio-player-container, .track-control {
   font-family: 'Roboto', sans-serif;
 
-#random-media {
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 100%; /* Use 100% of the container's width */
-  height: 100vh; /* Adjust the height to your preference */
+/* CSS to ensure the image is not enlarged beyond its natural size and centered on the page */
+img.responsive {
+  max-width: 100%; /* Ensures that image does not exceed the width of its container */
+  max-height: 100vh; /* Ensures that image does not exceed the height of the viewport */
+  width: auto; /* Width is auto to maintain aspect ratio */
+  height: auto; /* Height is auto to maintain aspect ratio */
+  display: block; /* Display block to allow margin auto to work */
+  margin: auto; /* Centers the image horizontally */
+  position: absolute; /* Absolute positioning */
+  top: 0; left: 0; bottom: 0; right: 0; /* Work with the margin auto to center the image vertically and horizontally */
 }
 
-
-img.responsive {
-  max-width: 100%;
-  max-height: 100vh; /* Adjust based on the maximum height you want */
-  width: auto;
-  height: auto;
-  display: block;
+/* Container for the image to help with positioning */
+.image-container {
+  position: relative; /* Relative positioning to contain the absolutely positioned image */
+  width: 100%; /* Container takes full width */
+  height: 100vh; /* Container takes full viewport height */
 }
 
 
