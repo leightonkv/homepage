@@ -1861,29 +1861,40 @@ function setTrack(index) {
   audioPlayer.play();
   
   // Update the track info
+function getFileName(path) {
+  return path.split('/').pop();
+}
+
+function parseFileName(fileName) {
+  var nameWithoutExtension = fileName.replace('.mp3', '');
+  var parts = nameWithoutExtension.split(' - ');
+  return { artist: parts[0], title: parts.slice(1).join(' - ') };
+}
+
+function setTrack(index) {
+  // Wrap around the index if it goes out of bounds
+  currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
+  var track = mp3Files[currentTrackIndex];
   var trackInfo = parseFileName(getFileName(track));
+
   document.getElementById('artist-name').textContent = trackInfo.artist;
   document.getElementById('track-title').textContent = trackInfo.title;
-  
+  var audioPlayer = document.getElementById('audio-player');
+  audioPlayer.src = track;
+  audioPlayer.play();
+
   // Update the background image
   var randomImage = getRandomItem(imageFiles);
   document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
 }
 
-function nextTrack() {
-  setTrack(currentTrackIndex + 1);
-}
-
-function previousTrack() {
-  setTrack(currentTrackIndex - 1);
-}
-
-// The rest of your functions, such as getRandomItem, getFileName, parseFileName, should be defined here
+// The rest of your script where you define getRandomItem...
 
 // Set the initial track and image on page load
 window.onload = function() {
   setTrack(0);
 };
+
     </script>
 </body>
 </html>
