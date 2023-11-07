@@ -38,20 +38,23 @@ audio#random-music {
     #audio-player-container, .track-control {
   font-family: 'Roboto', sans-serif;
 
-        #random-media {
-  /* This will make the background image cover the entire container while keeping its aspect ratio */
+#random-media {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
-  height: 100vh; /* Adjust the height as necessary */
+  width: 100%; /* Use 100% of the container's width */
+  height: 100vh; /* Adjust the height to your preference */
 }
 
-/* If you are dealing with img tags instead, use this */
-img {
+
+img.responsive {
   max-width: 100%;
+  max-height: 100vh; /* Adjust based on the maximum height you want */
+  width: auto;
   height: auto;
-  display: block; /* Remove extra space below the image */
+  display: block;
 }
+
 
 
 </style>
