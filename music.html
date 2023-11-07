@@ -12,6 +12,15 @@
     left: 0;
     width: 100%;
   }
+    .track-control {
+  cursor: pointer;
+  background: none; /* Removes the default button background */
+  border: none; /* Removes the default button border */
+  padding: 5px 10px;
+  font-family: 'Roboto', sans-serif; /* Applies the Roboto font */
+  user-select: none;
+}
+
 </style>
 </head>
 <body>
@@ -26,7 +35,6 @@
   </audio>
   <div id="track-info">
       </div>
-  <button onclick="previousTrack()">Previous</button>
   <button class="track-control" onclick="nextTrack()">>> A Different Tune</button>
 </div>
     
