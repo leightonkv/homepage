@@ -2033,6 +2033,21 @@ audio#random-music {
         setTrack(currentTrackIndex - 1);
     }
 
+  // Keyboard event listener
+  document.addEventListener('keydown', function(event) {
+    var audioPlayer = document.getElementById('audio-player');
+    if (event.code === 'Space') {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
+    } else if (event.code === 'ArrowRight') {
+      nextTrack();
+    } else if (event.code === 'ArrowLeft') {
+      previousTrack();
+    }
+
     // Set random media on page load
     window.onload = function() {
         nextTrack(); // Changed from setTrack(0) to nextTrack()
