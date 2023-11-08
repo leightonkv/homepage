@@ -38,25 +38,21 @@ audio#random-music {
     #audio-player-container, .track-control {
   font-family: 'Roboto', sans-serif;
 
-/* CSS to ensure the image is not enlarged beyond its natural size and centered on the page */
-img.responsive {
-  max-width: 100vh; /* Ensures that image does not exceed the width of its container */
-  max-height: 100vh; /* Ensures that image does not exceed the height of the viewport */
-  width: auto; /* Width is auto to maintain aspect ratio */
-  height: auto; /* Height is auto to maintain aspect ratio */
-  display: block; /* Display block to allow margin auto to work */
-  margin: auto; /* Centers the image horizontally */
-  position: absolute; /* Absolute positioning */
-  top: 0; left: 0; bottom: 0; right: 0; /* Work with the margin auto to center the image vertically and horizontally */
-}
+        /* Styles that apply to all themes */
+        body {
+            background-color: white; /* Set the background to white */
+            color: black; /* Set the text color to black or any color you prefer */
+            /* Other styles */
+        }
 
-/* Container for the image to help with positioning */
-.image-container {
-  position: relative; /* Relative positioning to contain the absolutely positioned image */
-  width: 100vh; /* Container takes full width */
-  height: 100vh; /* Container takes full viewport height */
-}
-
+        /* Override styles for users who have set a preference for dark or light mode */
+        @media (prefers-color-scheme: dark), (prefers-color-scheme: light) {
+            body {
+                background-color: white; /* Ensure background is white in dark mode as well */
+                color: black; /* Ensure text color is black in dark mode as well */
+                /* Other styles */
+            }
+        }
 
 
 </style>
