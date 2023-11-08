@@ -1888,45 +1888,46 @@ audio#random-music {
 
 ]; // Replace with the actual image array
 
-var currentTrackIndex = 0;
+    var currentTrackIndex = 0;
 
-function getRandomItem(array) {
-    return array[Math.floor(Math.random() * array.length)];
-}
+    function getRandomItem(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
 
-function setTrack(index) {
-    // Wrap around the index if it goes out of bounds
-    currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
-    var track = mp3Files[currentTrackIndex];
+    function setTrack(index) {
+        // Wrap around the index if it goes out of bounds
+        currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
+        var track = mp3Files[currentTrackIndex];
 
-    // Update the audio source and play the track
-    var audioPlayer = document.getElementById('audio-player');
-    audioPlayer.src = track;
-    audioPlayer.play();
+        // Update the audio source and play the track
+        var audioPlayer = document.getElementById('audio-player');
+        audioPlayer.src = track;
+        audioPlayer.play();
 
-    // Update the background image
-    var randomImage = getRandomItem(imageFiles);
-    document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
-}
+        // Update the background image
+        var randomImage = getRandomItem(imageFiles);
+        document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
+    }
 
-function nextTrack() {
-    // Select a random index from the mp3Files array
-    var randomIndex = Math.floor(Math.random() * mp3Files.length);
+    function nextTrack() {
+        // Select a random index from the mp3Files array
+        var randomIndex = Math.floor(Math.random() * mp3Files.length);
 
-    // Set the track to the randomly selected index
-    setTrack(randomIndex);
-}
+        // Set the track to the randomly selected index
+        setTrack(randomIndex);
+    }
 
+    function previousTrack() {
+        setTrack(currentTrackIndex - 1);
+    }
 
-function previousTrack() {
-    setTrack(currentTrackIndex - 1);
-}
+    // Set random media on page load
+    window.onload = function() {
+        nextTrack(); // Changed from setTrack(0) to nextTrack()
+    };
 
-// Set random media on page load
-window.onload = function() {
-    setTrack(0);
-};
-
-    </script>
+    // Add event listener to play the next track when the current one ends
+    document.getElementById('audio-player').addEventListener('ended', nextTrack);
+</script>
 </body>
 </html>
