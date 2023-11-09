@@ -3,95 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://leighton.digital/essential_audio.css">
     <title>sound and vision</title>
-<style>
-  /* Add your CSS here for styling the player and the background */
-
-        #audio-player {
-      transform: scale(0.75);
-            transform-origin: left;
-        }
-
-  #player-container {
-    position: absolute; /* or 'fixed' if you want it to stay in place when scrolling */
-    top: 0;
-    left: 0;
-  }
-
-    .track-control {
-  cursor: pointer;
-  background: none; /* Removes the default button background */
-  border: none; /* Removes the default button border */
-  padding: 5px 10px;
-  font-family: 'Roboto', sans-serif; /* Applies the Roboto font */
-  user-select: none;
-}
-
-    /* Add styles for the audio element */
-audio#random-music {
-    width: 50%; /* Set the width to 50% of its current size */
-    display: block; /* Ensure it's a block element to respect width */
-    margin: 0 auto; /* Center the player in the page */
-    margin-top: 20px; /* Add some space above the player */
-}
-
-/* Add styles for track controls for better spacing and alignment */
-.track-controls {
-    text-align: center; /* Center the buttons */
-    margin-bottom: 20px; /* Add some space below the buttons */
-}
-
-    #audio-player-container, .track-control {
-  font-family: 'Roboto', sans-serif;
-
-        /* Styles that apply to all themes */
+    <style>
+        /* Custom styles here */
         body {
-            background-color: white; /* Set the background to white */
-            color: black; /* Set the text color to black or any color you prefer */
-            /* Other styles */
+            font-family: 'Roboto', sans-serif;
+            background-color: white;
+            color: black;
         }
-
-        /* Override styles for users who have set a preference for dark or light mode */
-        @media (prefers-color-scheme: dark), (prefers-color-scheme: light) {
-            body {
-                background-color: white; /* Ensure background is white in dark mode as well */
-                color: black; /* Ensure text color is black in dark mode as well */
-                /* Other styles */
-            }
+        .track-control {
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            user-select: none;
         }
-
-
-</style>
+        #random-media {
+            width: 100%;
+            height: 90vh;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
 </head>
 <body>
 
+<div id="random-media"></div>
 
-<div id="random-media" style="width: 100%; height: 90vh; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
-
-<div id="player-container">
-  <audio id="audio-player" controls>
-    Your browser does not support the audio element.
-  </audio>
-  <div id="track-info">
-      </div>
-  <button class="track-control" onclick="nextTrack()">CHANGE YOUR TUNE</button>
+<div class="essential_audio" id="player-container">
+    <!-- Player Button -->
+    <div>
+        <div class="off"></div> <!-- This div will change class based on player state -->
+    </div>
+    <!-- Track -->
+    <div>
+        <div></div> <!-- This div represents the loading progress bar -->
+    </div>
+    <!-- Click & Drag Sensor -->
+    <div></div>
 </div>
-    
-        <script>
-        // Function to log messages to the console
-        function logMessage(message) {
-            console.log(message);
-        }
 
-        // Example usage:
-        logMessage('Hello, this is a log message!');
-        logMessage('Another message to log.');
-    </script>
+<button class="track-control" onclick="nextTrack()">CHANGE YOUR TUNE</button>
 
-
-    <script>
-        // Arrays of MP3 and image files retrieved from the spreadsheet
-        var mp3Files = [ 'https://dressfancy.org/mp3/(For%20The)%20Love%20Of%20Weeping.mp3',
+<script src="https://leighton.digital/essential_audio.js"></script>
+<script>
+    // Arrays of MP3 and image files retrieved from the spreadsheet
+    var mp3Files = ['https://dressfancy.org/mp3/(For%20The)%20Love%20Of%20Weeping.mp3',
 'https://dressfancy.org/mp3/01%20-%20%20A1.mp3',
 'https://dressfancy.org/mp3/01%20-%20Alftavatn.mp3',
 'https://dressfancy.org/mp3/01%20-%20Call%20Incoming.mp3',
@@ -1679,7 +1638,7 @@ audio#random-music {
 'https://dressfancy.org/mp3/%e7%9f%a2%e9%87%8e%e9%a1%95%e5%ad%90.mp3',
 'https://dressfancy.org/mp3/%e7%a0%82%e3%81%ae%e6%b0%b4%20(Sand%20Water).mp3',
  ]; // Replace with the actual MP3 array
-        var imageFiles = ['https://dressfancy.org/mp3/01-23-09face05_900.jpg',
+    var imageFiles = ['https://dressfancy.org/mp3/01-23-09face05_900.jpg',
 'https://dressfancy.org/mp3/027.jpg',
 'https://dressfancy.org/mp3/046125835cf_m.png',
 'https://dressfancy.org/mp3/051209.jpg',
@@ -2000,9 +1959,7 @@ audio#random-music {
 'https://dressfancy.org/mp3/Found/Found2/de2a12d26928bece8692f87c524e154d6cea1b36_m.gif',
 'https://dressfancy.org/mp3/Found/Found2/e4f9149a534b23580f2a236a1d9215a60fb20dce_m.jpg',
 'https://dressfancy.org/mp3/Found/Found2/f28a75b83c6998fae370a6ad9d8f8b97fe8fc1d5_m.jpg',
-                          
-
-]; // Replace with the actual image array
+                     ]; // Replace with the actual image array
 
     var currentTrackIndex = 0;
 
@@ -2015,10 +1972,12 @@ audio#random-music {
         currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
         var track = mp3Files[currentTrackIndex];
 
-        // Update the audio source and play the track
-        var audioPlayer = document.getElementById('audio-player');
-        audioPlayer.src = track;
-        audioPlayer.play();
+        // Since the new player handles its own audio element, we retrieve it through its API
+        var audioPlayer = Essential_Audio.Audio[currentTrackIndex];
+        if (audioPlayer) {
+            audioPlayer.src = track;
+            audioPlayer.play();
+        }
 
         // Update the background image
         var randomImage = getRandomItem(imageFiles);
@@ -2033,17 +1992,15 @@ audio#random-music {
         setTrack(randomIndex);
     }
 
-    function previousTrack() {
-        setTrack(currentTrackIndex - 1);
-    }
-
     // Set random media on page load
     window.onload = function() {
-        nextTrack(); // Changed from setTrack(0) to nextTrack()
+        Essential_Audio.init(); // Ensure the Essential Audio Player is initialized
+        nextTrack();
     };
 
-    // Add event listener to play the next track when the current one ends
-    document.getElementById('audio-player').addEventListener('ended', nextTrack);
+    // Since the Essential Audio Player might handle its own 'ended' event,
+    // you'll need to check if you should still use this or if the player has a way to handle it.
+    // document.getElementById('audio-player').addEventListener('ended', nextTrack);
 </script>
 </body>
 </html>
