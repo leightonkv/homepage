@@ -1954,8 +1954,12 @@ var imageFiles = ['https://dressfancy.org/mp3/01-23-09face05_900.jpg',
 'https://dressfancy.org/mp3/Found/Found2/e4f9149a534b23580f2a236a1d9215a60fb20dce_m.jpg',
 'https://dressfancy.org/mp3/Found/Found2/f28a75b83c6998fae370a6ad9d8f8b97fe8fc1d5_m.jpg',
                      ];
-
 var currentTrackIndex = 0;
+var userInteracted = false;
+
+document.addEventListener('click', () => {
+    userInteracted = true;
+});
 
 function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
@@ -1971,6 +1975,24 @@ function setTrack(index) {
 
     var randomImage = getRandomItem(imageFiles);
     document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
+
+    if (userInteracted) {
+        // Call play only after user interaction
+        var audioPlayer = Essential_Audio.Audio['player1'];
+        if (audioPlayer) {
+            var playPromise = audioPlayer.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Audio is playing
+                }).catch(error => {
+                    console.warn("Audio playback was interrupted:", error);
+                    // Audio playback was interrupted
+                    // Retry or show a UI element to let the user manually start playback
+                });
+            }
+        }
+    }
 }
 
 function nextTrack() {
@@ -1978,7 +2000,8 @@ function nextTrack() {
 }
 
 window.onload = function() {
-    setTrack(0); // Initialize the player with the first track
+    // Initialize the player with the first track
+    setTrack(0);
 };
 </script>
 
