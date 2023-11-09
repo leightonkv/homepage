@@ -1967,17 +1967,39 @@
         return array[Math.floor(Math.random() * array.length)];
     }
 
-    function setTrack(index) {
-        // Wrap around the index if it goes out of bounds
-        currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
-        var track = mp3Files[currentTrackIndex];
+<script>
+// ... The rest of your existing JavaScript code remains unchanged ...
 
-        // Since the new player handles its own audio element, we retrieve it through its API
-        var audioPlayer = Essential_Audio.Audio[currentTrackIndex];
-        if (audioPlayer) {
+function setTrack(index) {
+    currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
+    var track = mp3Files[currentTrackIndex];
+
+    console.log("Current track URL:", track); // Added for debugging
+
+    // Check if the Essential Audio Player script provides a way to access individual audio elements
+    var audioPlayer = Essential_Audio.Audio[currentTrackIndex];
+    if (audioPlayer) {
+        // Make sure the track URL is not null
+        if (track) {
+            // Set the track URL
             audioPlayer.src = track;
-            audioPlayer.play();
+            // Play the track using the player's API (this method name may differ)
+            Essential_Audio.Play(currentTrackIndex);
+        } else {
+            console.error("Track URL is null for index " + currentTrackIndex);
         }
+    } else {
+        console.error("Audio player for track index " + currentTrackIndex + " not found.");
+    }
+
+    // Update the background image
+    var randomImage = getRandomItem(imageFiles);
+    document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
+}
+
+// ... The rest of your existing JavaScript code remains unchanged ...
+</script>
+
 
         // Update the background image
         var randomImage = getRandomItem(imageFiles);
