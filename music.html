@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://leighton.digital/essential_audio.css">
-    <script src="https://leighton.digital/essential_audio.js"></script>
+    <link rel="stylesheet" href="https://dressfancy.org/path_to_your/essential_audio.css">
+    <script src="https://dressfancy.org/path_to_your/essential_audio.js"></script>
     <title>Sound and Vision</title>
     <style>
         /* Custom styles */
@@ -1955,35 +1955,32 @@ var imageFiles = ['https://dressfancy.org/mp3/01-23-09face05_900.jpg',
 'https://dressfancy.org/mp3/Found/Found2/f28a75b83c6998fae370a6ad9d8f8b97fe8fc1d5_m.jpg',
                      ];
 var currentTrackIndex = 0;
-var userInteracted = false;
 
-document.addEventListener('click', () => {
-    userInteracted = true;
-});
-
+// Function to get a random item from an array
 function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
 // Function to set a track and background image based on an index
 function setTrack(index) {
-    var playerDiv = document.getElementById('player1');
-    var track = mp3Files[index];
-    playerDiv.setAttribute('data-url', track);
-    Essential_Audio.init();  // Initialize or re-initialize the player
+    // Stop the currently playing track if any
+    Essential_Audio.Stop();
 
-    var audioPlayer = Essential_Audio.Audio["player1"];
-    if (audioPlayer) {
-        // Attempt to play the audio
-        var playPromise = audioPlayer.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                // Audio is now playing
-            }).catch(error => {
-                console.error("Audio playback was interrupted:", error);
-            });
-        }
-    }
+    // Update the track index
+    currentTrackIndex = index;
+
+    // Get the new track URL
+    var track = mp3Files[currentTrackIndex];
+
+    // Find the player element and set its data-url attribute to the new track
+    var playerDiv = document.getElementById('player1');
+    playerDiv.setAttribute('data-url', track);
+
+    // Re-initialize the player to load the new track
+    Essential_Audio.init();
+
+    // Play the new track
+    Essential_Audio.Play("player1");
 
     // Set a random background image
     var randomImage = getRandomItem(imageFiles);
@@ -1992,11 +1989,10 @@ function setTrack(index) {
 
 // Function to go to the next track
 function nextTrack() {
-    currentTrackIndex = (currentTrackIndex + 1) % mp3Files.length;
-    setTrack(currentTrackIndex);
+    setTrack((currentTrackIndex + 1) % mp3Files.length);
 }
 
-// When the window loads, set a random track and background image
+// Initialize the player with a random track when the window loads
 window.onload = function() {
     currentTrackIndex = Math.floor(Math.random() * mp3Files.length); // Randomize the starting song
     setTrack(currentTrackIndex); // Set the first track and background
