@@ -1965,43 +1965,41 @@ function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
+// Function to set a track and background image based on an index
 function setTrack(index) {
-    currentTrackIndex = index;
-    var track = mp3Files[currentTrackIndex];
-
     var playerDiv = document.getElementById('player1');
+    var track = mp3Files[index];
     playerDiv.setAttribute('data-url', track);
-    Essential_Audio.init(); // Re-initialize the player to load the new track
+    Essential_Audio.init();  // Initialize or re-initialize the player
 
-    var randomImage = getRandomItem(imageFiles);
-    document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
-
-    if (userInteracted) {
-        // Call play only after user interaction
-        var audioPlayer = Essential_Audio.Audio['player1'];
-        if (audioPlayer) {
-            var playPromise = audioPlayer.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    // Audio is playing
-                }).catch(error => {
-                    console.warn("Audio playback was interrupted:", error);
-                    // Audio playback was interrupted
-                    // Retry or show a UI element to let the user manually start playback
-                });
-            }
+    var audioPlayer = Essential_Audio.Audio["player1"];
+    if (audioPlayer) {
+        // Attempt to play the audio
+        var playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                // Audio is now playing
+            }).catch(error => {
+                console.error("Audio playback was interrupted:", error);
+            });
         }
     }
+
+    // Set a random background image
+    var randomImage = getRandomItem(imageFiles);
+    document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
 }
 
+// Function to go to the next track
 function nextTrack() {
-    setTrack((currentTrackIndex + 1) % mp3Files.length);
+    currentTrackIndex = (currentTrackIndex + 1) % mp3Files.length;
+    setTrack(currentTrackIndex);
 }
 
+// When the window loads, set a random track and background image
 window.onload = function() {
-    // Initialize the player with the first track
-    setTrack(0);
+    currentTrackIndex = Math.floor(Math.random() * mp3Files.length); // Randomize the starting song
+    setTrack(currentTrackIndex); // Set the first track and background
 };
 </script>
 
