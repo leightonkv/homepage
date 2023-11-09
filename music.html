@@ -6,45 +6,38 @@
     <link rel="stylesheet" href="https://leighton.digital/essential_audio.css">
     <script src="https://leighton.digital/essential_audio.js"></script>
     <title>Sound and Vision</title>
-   <style>
+  <style>
     /* Custom styles */
     body {
         font-family: 'Roboto', sans-serif;
         background-color: white;
         color: black;
         margin: 0;
-        padding-top: 50px; /* Adjust this value to the height of your audio player */
+        padding: 0;
     }
     .essential_audio {
-        position: fixed; /* Fixed to the top */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 50px; /* Set the height of the player */
-        z-index: 102; /* Above the image and track control */
-        background: #fff; /* Optional: Set a background color for the audio player */
+        position: fixed; /* Keep the player at the top even when scrolling */
+        top: 0; /* Position at the top */
+        left: 0; /* Align to the left */
+        width: 100%; /* Stretch across the full width */
+        z-index: 102; /* Ensure it's above other content */
+        background: #fff; /* A background color to ensure visibility */
     }
     #random-media {
+        position: absolute; /* Position absolutely will respect the top offset */
+        top: 50px; /* Give enough space for the player, adjust as needed */
         width: 100%;
-        height: 90vh;
+        height: calc(90vh - 50px); /* Subtract the player's height */
         background-size: contain;
         background-repeat: no-repeat;
-        background-position: center;
-        position: relative; /* Relative to normal flow */
-        z-index: 101; /* Below the audio player but above content */
-        margin-top: 50px; /* Push down by the height of the player */
+        background-position: center top;
+        z-index: 101; /* Below the fixed player but above the rest of the content */
     }
     .track-control {
-        cursor: pointer;
-        background: none;
-        border: none;
-        padding: 5px 10px;
-        font-family: 'Roboto', sans-serif;
-        user-select: none;
-        position: absolute;
-        top: 10px; /* Positioned near the top, adjust as needed */
-        right: 10px; /* Positioned from the right, adjust as needed */
-        z-index: 103; /* Above everything else */
+        position: fixed; /* Fix position to the viewport */
+        top: 5px; /* Position it near the top */
+        right: 10px; /* Position it from the right */
+        z-index: 103; /* Above all other elements */
     }
 </style>
     
