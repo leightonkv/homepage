@@ -4,20 +4,28 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://leighton.digital/essential_audio.css">
-    <title>sound and vision</title>
+    <script src="https://leighton.digital/essential_audio.js"></script>
+    <title>Sound and Vision</title>
     <style>
-        /* Custom styles here */
+        /* Custom styles */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: white;
             color: black;
+            margin: 0;
+            padding: 0;
         }
         .track-control {
             cursor: pointer;
             background: none;
             border: none;
             padding: 5px 10px;
+            font-family: 'Roboto', sans-serif;
             user-select: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
         }
         #random-media {
             width: 100%;
@@ -31,26 +39,12 @@
 <body>
 
 <div id="random-media"></div>
-
-<div class="essential_audio" id="player-container">
-    <!-- Player Button -->
-    <div>
-        <div class="off"></div> <!-- This div will change class based on player state -->
-    </div>
-    <!-- Track -->
-    <div>
-        <div></div> <!-- This div represents the loading progress bar -->
-    </div>
-    <!-- Click & Drag Sensor -->
-    <div></div>
-</div>
-
+<div class="essential_audio" id="player1"></div>
 <button class="track-control" onclick="nextTrack()">CHANGE YOUR TUNE</button>
 
-<script src="https://leighton.digital/essential_audio.js"></script>
 <script>
-    // Arrays of MP3 and image files retrieved from the spreadsheet
-    var mp3Files = ['https://dressfancy.org/mp3/(For%20The)%20Love%20Of%20Weeping.mp3',
+// Your array of MP3 files and image files
+var mp3Files = ['https://dressfancy.org/mp3/(For%20The)%20Love%20Of%20Weeping.mp3',
 'https://dressfancy.org/mp3/01%20-%20%20A1.mp3',
 'https://dressfancy.org/mp3/01%20-%20Alftavatn.mp3',
 'https://dressfancy.org/mp3/01%20-%20Call%20Incoming.mp3',
@@ -1637,47 +1631,356 @@
 'https://dressfancy.org/mp3/%d1%81%d1%82%d1%80%d0%b0%d1%81%d1%82%d1%8c.mp3',
 'https://dressfancy.org/mp3/%e7%9f%a2%e9%87%8e%e9%a1%95%e5%ad%90.mp3',
 'https://dressfancy.org/mp3/%e7%a0%82%e3%81%ae%e6%b0%b4%20(Sand%20Water).mp3',
- ]; // Replace with the actual MP3 array
-    var imageFiles = [/* 1500 images listed here */]; // Replace with the actual image array
+ ];
+var imageFiles = ['https://dressfancy.org/mp3/01-23-09face05_900.jpg',
+'https://dressfancy.org/mp3/027.jpg',
+'https://dressfancy.org/mp3/046125835cf_m.png',
+'https://dressfancy.org/mp3/051209.jpg',
+'https://dressfancy.org/mp3/1.%20Continual%20Dissipation...jpg',
+'https://dressfancy.org/mp3/1.jpg',
+'https://dressfancy.org/mp3/10.jpg',
+'https://dressfancy.org/mp3/1024x1024.jpg',
+'https://dressfancy.org/mp3/10269101_887621764622689_2236476376947855393_o.jpg',
+'https://dressfancy.org/mp3/12.jpg',
+'https://dressfancy.org/mp3/1_o.gif',
+'https://dressfancy.org/mp3/12556010974_69645e6d44_z.jpg',
+'https://dressfancy.org/mp3/12556028394_236e498bc0_h.jpg',
+'https://dressfancy.org/mp3/1258548553-1.jpg',
+'https://dressfancy.org/mp3/1280.jpg',
+'https://dressfancy.org/mp3/12345000.gif',
+'https://dressfancy.org/mp3/1280.png',
+'https://dressfancy.org/mp3/12_drawingchain.jpg',
+'https://dressfancy.org/mp3/14_14frost-alteration06_v2.jpg',
+'https://dressfancy.org/mp3/1_jb8.jpg',
+'https://dressfancy.org/mp3/12802.png',
+'https://dressfancy.org/mp3/1rock_highres.jpg',
+'https://dressfancy.org/mp3/200909155.jpg',
+'https://dressfancy.org/mp3/215.jpg',
+'https://dressfancy.org/mp3/222.jpg',
+'https://dressfancy.org/mp3/23.19.03.png',
+'https://dressfancy.org/mp3/3.gif',
+'https://dressfancy.org/mp3/3258555531_6734d2c303_o.jpg',
+'https://dressfancy.org/mp3/333524931770_iiABvV7t_l.jpg',
+'https://dressfancy.org/mp3/3730218098_1b9fb0d3d5.jpg',
+'https://dressfancy.org/mp3/3d.jpg',
+'https://dressfancy.org/mp3/3dc_b.jpg',
+'https://dressfancy.org/mp3/400.jpg',
+'https://dressfancy.org/mp3/4015.JPG',
+'https://dressfancy.org/mp3/40152.JPG',
+'https://dressfancy.org/mp3/4076736996_168f9d5123_b.jpg',
+'https://dressfancy.org/mp3/4265964061_dfe5881d20_o.jpg',
+'https://dressfancy.org/mp3/4341.jpg',
+'https://dressfancy.org/mp3/4512297501_17710a1629_o.jpg',
+'https://dressfancy.org/mp3/4827711059_e826101153_o.png',
+'https://dressfancy.org/mp3/4869879443_71fb68f00c_o.jpg',
+'https://dressfancy.org/mp3/5-Frieke+Janssens_4_B.jpg',
+'https://dressfancy.org/mp3/500x541.jpg',
+'https://dressfancy.org/mp3/508-11248.jpg.crop_display.jpg',
+'https://dressfancy.org/mp3/560.jpg',
+'https://dressfancy.org/mp3/5711.jpg',
+'https://dressfancy.org/mp3/6152181670_da059e70b0_z.jpg',
+'https://dressfancy.org/mp3/66_1.jpg',
+'https://dressfancy.org/mp3/6921467537_841795a54e_b.jpg',
+'https://dressfancy.org/mp3/74.jpg',
+'https://dressfancy.org/mp3/8.png',
+'https://dressfancy.org/mp3/958770_l.jpg',
+'https://dressfancy.org/mp3/Atl3zw0CEAEhXRS.jpg_large.jpg',
+'https://dressfancy.org/mp3/Becher_Winding-Tower_Wales-England2.jpg',
+'https://dressfancy.org/mp3/Boozemin.jpg',
+'https://dressfancy.org/mp3/CJG.jpg',
+'https://dressfancy.org/mp3/Cora-02-18-2017_1200x.jpg',
+'https://dressfancy.org/mp3/FACE.jpg',
+'https://dressfancy.org/mp3/aura01.jpeg',
+'https://dressfancy.org/mp3/Herri_met_de_Bles.jpg',
+'https://dressfancy.org/mp3/Home%20Guard.jpg',
+'https://dressfancy.org/mp3/KTMain.jpg',
+'https://dressfancy.org/mp3/Laura-Ann-Huber-Illustration-Blend-Magazin-1_51.jpg',
+'https://dressfancy.org/mp3/Lionel_Bawden.jpg',
+'https://dressfancy.org/mp3/Michelle_Grabner_Untitled_2013_2163_412.jpg',
+'https://dressfancy.org/mp3/PH.jpg',
+'https://dressfancy.org/mp3/PHB07.jpg',
+'https://dressfancy.org/mp3/POLA_1742_12320587891_l.jpg',
+'https://dressfancy.org/mp3/b1-michael_ferragosto-v2021.flac',
+'https://dressfancy.org/mp3/Particles.jpg',
+'https://dressfancy.org/mp3/Polymaths.jpg',
+'https://dressfancy.org/mp3/bag.gif',
+'https://dressfancy.org/mp3/SURFACE2AIR-cargo5.jpg',
+'https://dressfancy.org/mp3/BC.jpeg',
+'https://dressfancy.org/mp3/TFGC_FeuertanzEP_LY16.jpg',
+'https://dressfancy.org/mp3/Tel.jpg',
+'https://dressfancy.org/mp3/The-Eraser.jpg',
+'https://dressfancy.org/mp3/The-Shallow-End.jpg',
+'https://dressfancy.org/mp3/TimEnthoven.jpg',
+'https://dressfancy.org/mp3/bike.jpeg',
+'https://dressfancy.org/mp3/USA_display.jpg',
+'https://dressfancy.org/mp3/Uniqlo_1.jpg',
+'https://dressfancy.org/mp3/bounce.png',
+'https://dressfancy.org/mp3/BrokenPinglish.png',
+'https://dressfancy.org/mp3/agroagroagro.jpg',
+'https://dressfancy.org/mp3/atelierfevrier_01.jpg',
+'https://dressfancy.org/mp3/ca6c8bf222b187b576715a443e7ffe4f.png',
+'https://dressfancy.org/mp3/ccc.jpeg',
+'https://dressfancy.org/mp3/clocksmall.gif',
+'https://dressfancy.org/mp3/cube.png',
+'https://dressfancy.org/mp3/barredowl.jpg',
+'https://dressfancy.org/mp3/bartolome.jpg',
+'https://dressfancy.org/mp3/email.png',
+'https://dressfancy.org/mp3/bol.jpg',
+'https://dressfancy.org/mp3/bold_2.jpg',
+'https://dressfancy.org/mp3/email32.png',
+'https://dressfancy.org/mp3/brianKhek_redDahlia.jpg',
+'https://dressfancy.org/mp3/FC_Magdeburg.gif',
+'https://dressfancy.org/mp3/gorillahand.jpeg',
+'https://dressfancy.org/mp3/chats-website.jpg',
+'https://dressfancy.org/mp3/chicago_red_panda.jpg',
+'https://dressfancy.org/mp3/chris-ware-narrative-diagram-for-quimby-the-acme-novelty-library.jpg',
+'https://dressfancy.org/mp3/grabner.png',
+'https://dressfancy.org/mp3/cloth02.jpg',
+'https://dressfancy.org/mp3/computer-art.jpg',
+'https://dressfancy.org/mp3/crowe.jpg',
+'https://dressfancy.org/mp3/csp.jpg',
+'https://dressfancy.org/mp3/hans.gif',
+'https://dressfancy.org/mp3/daggereyes.jpg',
+'https://dressfancy.org/mp3/device.jpg',
+'https://dressfancy.org/mp3/dimensions.jpg',
+'https://dressfancy.org/mp3/ding_dong.jpg',
+'https://dressfancy.org/mp3/dj.jpg',
+'https://dressfancy.org/mp3/document.jpg',
+'https://dressfancy.org/mp3/dop.jpg',
+'https://dressfancy.org/mp3/dqkzzxb_106hfbbq6dd_b.jpg',
+'https://dressfancy.org/mp3/dreamcaptchas_1.jpg',
+'https://dressfancy.org/mp3/dynamite.jpg',
+'https://dressfancy.org/mp3/hd.gif',
+'https://dressfancy.org/mp3/heatingeating.png',
+'https://dressfancy.org/mp3/es.jpg',
+'https://dressfancy.org/mp3/forever.jpg',
+'https://dressfancy.org/mp3/framus.jpg',
+'https://dressfancy.org/mp3/ga.jpg',
+'https://dressfancy.org/mp3/gaga.jpg',
+'https://dressfancy.org/mp3/gas.jpg',
+'https://dressfancy.org/mp3/girl.jpg',
+'https://dressfancy.org/mp3/globes.jpg',
+'https://dressfancy.org/mp3/horse.gif',
+'https://dressfancy.org/mp3/jeh.png',
+'https://dressfancy.org/mp3/grayson.jpg',
+'https://dressfancy.org/mp3/hannah_05.jpg',
+'https://dressfancy.org/mp3/hannesiversen.jpg',
+'https://dressfancy.org/mp3/keyes.png',
+'https://dressfancy.org/mp3/hatmap03_905.jpg',
+'https://dressfancy.org/mp3/hb.jpg',
+'https://dressfancy.org/mp3/kvsd.png',
+'https://dressfancy.org/mp3/head.jpg',
+'https://dressfancy.org/mp3/headsvols.jpg',
+'https://dressfancy.org/mp3/logo.png',
+'https://dressfancy.org/mp3/heavy.jpg',
+'https://dressfancy.org/mp3/megryan_bubbling.gif',
+'https://dressfancy.org/mp3/horse.jpg',
+'https://dressfancy.org/mp3/hyousi-1.jpg',
+'https://dressfancy.org/mp3/infinitetapestry_round1_905.jpg',
+'https://dressfancy.org/mp3/jamesjean.JPG',
+'https://dressfancy.org/mp3/jamesjean2.JPG',
+'https://dressfancy.org/mp3/jeh.jpg',
+'https://dressfancy.org/mp3/mini.png',
+'https://dressfancy.org/mp3/jj.jpg',
+'https://dressfancy.org/mp3/jph.jpg',
+'https://dressfancy.org/mp3/kevinlucbert.jpg',
+'https://dressfancy.org/mp3/mm.png',
+'https://dressfancy.org/mp3/klarwein-1_905.jpg',
+'https://dressfancy.org/mp3/kr2.jpg',
+'https://dressfancy.org/mp3/olmec.gif',
+'https://dressfancy.org/mp3/Pantagruel-24-2.png',
+'https://dressfancy.org/mp3/lux.jpg',
+'https://dressfancy.org/mp3/maisel.jpg',
+'https://dressfancy.org/mp3/para.gif',
+'https://dressfancy.org/mp3/meow.jpg',
+'https://dressfancy.org/mp3/patakk2.gif',
+'https://dressfancy.org/mp3/phlegm.jpeg',
+'https://dressfancy.org/mp3/monkeys.jpg',
+'https://dressfancy.org/mp3/mound1.jpg',
+'https://dressfancy.org/mp3/mountain1.jpg',
+'https://dressfancy.org/mp3/naum-gabo.jpg',
+'https://dressfancy.org/mp3/ny2.jpg',
+'https://dressfancy.org/mp3/olifant.jpg',
+'https://dressfancy.org/mp3/plant.png',
+'https://dressfancy.org/mp3/onformative.jpg',
+'https://dressfancy.org/mp3/portal.gif',
+'https://dressfancy.org/mp3/Reza_Ali_Lorenz.png',
+'https://dressfancy.org/mp3/rnd3.gif',
+'https://dressfancy.org/mp3/Screen-shot-2011-03-27-at-08.09.46.png',
+'https://dressfancy.org/mp3/suncantseethelight.gif',
+'https://dressfancy.org/mp3/possibly.jpg',
+'https://dressfancy.org/mp3/pr1.jpg',
+'https://dressfancy.org/mp3/putty.jpg',
+'https://dressfancy.org/mp3/pyrite.jpg',
+'https://dressfancy.org/mp3/recursive.jpg',
+'https://dressfancy.org/mp3/rg.jpg',
+'https://dressfancy.org/mp3/tractor.png',
+'https://dressfancy.org/mp3/robo.jpg',
+'https://dressfancy.org/mp3/rombo.jpg',
+'https://dressfancy.org/mp3/russell-weekes.jpg',
+'https://dressfancy.org/mp3/s.jpg',
+'https://dressfancy.org/mp3/serg.jpg',
+'https://dressfancy.org/mp3/sjaal_905.jpg',
+'https://dressfancy.org/mp3/slab1_905.jpg',
+'https://dressfancy.org/mp3/sleeping.jpg',
+'https://dressfancy.org/mp3/slide-to-unlock-noframe.jpg',
+'https://dressfancy.org/mp3/snake.jpg',
+'https://dressfancy.org/mp3/squares.jpg',
+'https://dressfancy.org/mp3/sun.jpg',
+'https://dressfancy.org/mp3/Troll_woman.gif',
+'https://dressfancy.org/mp3/thumb-570x760-128428.jpg',
+'https://dressfancy.org/mp3/turt.png',
+'https://dressfancy.org/mp3/tumblr_odrc3iTE4P1s24xrxo2_1280.jpg',
+'https://dressfancy.org/mp3/unnamed.png',
+'https://dressfancy.org/mp3/ultrazapping.jpg',
+'https://dressfancy.org/mp3/unnamed%20(13).jpg',
+'https://dressfancy.org/mp3/unnamed%20(15).jpg',
+'https://dressfancy.org/mp3/unnamed%20(4).jpg',
+'https://dressfancy.org/mp3/unnamed%20(5).jpg',
+'https://dressfancy.org/mp3/unnamed%20(9).jpg',
+'https://dressfancy.org/mp3/vasulka.gif',
+'https://dressfancy.org/mp3/vn.jpg',
+'https://dressfancy.org/mp3/xf2.jpg',
+'https://dressfancy.org/mp3/yosukeyamaguchi.jpg',
+'https://dressfancy.org/mp3/ypr.png',
+'https://dressfancy.org/mp3/zardoz%20head.jpg',
+'https://dressfancy.org/mp3/Found/0ef504cbd02bc2561c381ad7c8502fbc7cae98c4_m.png',
+'https://dressfancy.org/mp3/Found/12d207edad41437dd55f8c323fa8ffd723138c3e_m.jpg',
+'https://dressfancy.org/mp3/Found/1a5f10c9d56ffb954ddb3ab141cf1684c74899d3_m.gif',
+'https://dressfancy.org/mp3/Found/1e77c60b0d9eb82314b50e8f21c774992cd73c56_m.jpg',
+'https://dressfancy.org/mp3/Found/396008b8c0374ccff655d067eab77bd8df48607c_m.gif',
+'https://dressfancy.org/mp3/Found/3a252455e5fe2fa22986391e944d4488a5af81d4_m.jpg',
+'https://dressfancy.org/mp3/Found/3d47023990ead01646bf1058a423d99c32679f03_m.jpg',
+'https://dressfancy.org/mp3/Found/474a317c39239cd13852dd9406d8665ff0315a19_m.gif',
+'https://dressfancy.org/mp3/Found/4829b6241f61f4b5ac680be71532e02c57b0fab7_m.jpg',
+'https://dressfancy.org/mp3/Found/4c285231a1c4c2508bac0df6be7a6988f3a60169_m.jpg',
+'https://dressfancy.org/mp3/Found/4ec9cddcb3b1cc405097ab477d1c9bfde2a39124_m.png',
+'https://dressfancy.org/mp3/Found/4fb9091b246fc5546bbb13a83ef77ccefc5eb6b8_m.jpg',
+'https://dressfancy.org/mp3/Found/52b24b2931cdf3ad5d2faafda458fbf674ea71da_m.jpg',
+'https://dressfancy.org/mp3/Found/603ffa79401c6896e9bd96217dd1fe98ab6ede3d_m.jpg',
+'https://dressfancy.org/mp3/Found/6552bee675e2c4d2cd26ede02816a9eb4c59d3a4_m.gif',
+'https://dressfancy.org/mp3/Found/6b0665c38f4bf963ad90ae407c42566e22090ed8_m.png',
+'https://dressfancy.org/mp3/Found/7bf6629b1014d830c8e31fb0afbd3666a6ea8898_m.gif',
+'https://dressfancy.org/mp3/Found/7e0ccd5457b3d15c0f238b82d9a5978fde9434eb_m.png',
+'https://dressfancy.org/mp3/Found/7f73a9aa397fc92dd596191322111adb8224d723_m.jpg',
+'https://dressfancy.org/mp3/Found/821d5d1e491179c76bb4744aad3c17a8f42a7c80_m.jpg',
+'https://dressfancy.org/mp3/Found/8ddda6bb13dd5e2c61ebd7dc48867f50c73c3886_m.jpg',
+'https://dressfancy.org/mp3/Found/9404fd1336ab3d0b357eb3d336acbfd66925b101_m.jpg',
+'https://dressfancy.org/mp3/Found/b083c0c0d668a74b1f0f893ceaad6e1a329308b6_m.jpg',
+'https://dressfancy.org/mp3/Found/b0e25b0fff9e5badcf0ce4d9035252c20a449812_m.jpg',
+'https://dressfancy.org/mp3/Found/baa8a00bdea620a1fdebc3db52b32e61748767e5_m.jpg',
+'https://dressfancy.org/mp3/Found/c6e53be2e2b5f0532b9d67766fbe4994e84350cd_m.gif',
+'https://dressfancy.org/mp3/Found/c8860a68382755bd018dfe8c1e1c89b168e3125e_m.png',
+'https://dressfancy.org/mp3/Found/e07487336818d7f39cf5536a5a65185a36efd5c2_m.jpg',
+'https://dressfancy.org/mp3/Found/e108f08f8aff35732e4f8d5efb411eee844a680e_m.jpg',
+'https://dressfancy.org/mp3/Found/e2fa18bd0cc7fb7ec9df78b6b493d3df8b69a7c4_m.jpg',
+'https://dressfancy.org/mp3/Found/eaf390f62ae5433a0a155551d5cdf2da3e10575c_m.jpg',
+'https://dressfancy.org/mp3/Found/selvportraet_2.jpg',
+'https://dressfancy.org/mp3/Found/tumblr_lni6bbza8U1qhr3v1o1_500.jpg',
+'https://dressfancy.org/mp3/Found/Found2/005f2dadee5b3aa5dd2282ba879adb712a2bf2d0_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/08dab106efa8ecd1e6c3cdb1fe0d87b73c8c4972_m.png',
+'https://dressfancy.org/mp3/Found/Found2/0c36a0d8dc21476a527963e47cf4aeb1ddd57f1f_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/0c45c26daf052895eda65299467689cebaf88810_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/10b905cf6d41fa5763d55f5cc7da4295f290d058_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/1243a4563aa9a39eb63323016a49888c157c0131_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/13dd7e1ed56e33cc1bd13066b01b25fdd58d6810_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/19f8b79278bc6700bd86bbea2b04496a2c162f8b_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/203d84125ff60443183088bc02c95c7833715c8f_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/20598e24cdb296e4ffab155da7c2ecb1d894c356_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/24cb0d89749d28975ea3e67c62c3fae970882e84_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/26cad078022d791b2a4909da1118b08d28c1db5e_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/2807e3e1d8eab8c06de8a60b4cb366eed260a94e_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/2c73eca60d77dfcf947c9571e065e4583998ec22_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/2cc0e8c63912496b3a98e786c848ca0c368bc4c2_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/2ff2fcb6a7b521ed1e90c6cb58ffc781f0de1904_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/32ab6589eda22d84555fb0a80535fa2e5cbcdb58_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/35015d9311af274c05395e4045fb420d58f40262_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/3a8974721f54a52072dcd76eed8839e929c7c8a0_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/3c805c14014e53fccfe38df42788430afd895a10_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/3f910d4b5663c730aee155c0bdd0b20977adf2e6_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/40ada96b2264a0958de26f178f763d1e807c7103_m.png',
+'https://dressfancy.org/mp3/Found/Found2/40d127f8af7f13e9d3c5479d62c3b4c11e8146bf_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/4165207c37809dde98667f8481003248480c2337_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/426082500a52a0a89bf747d50e94b0f5ecbbd334_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/439e31ee9dcd258eedbc64edd1529f8b372db812_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/449a81870e8bb0a0410e5ffd5dcc212dde43a0e3_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/457e0d745587ef3d43ab86dd2f1af9840e214f7d_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/48a6762ee60399e3733b08f5a0ba2e70af596723_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/4c24662d50d6cebd6130df632e2c533859eb28ae_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/4dec15c3530ba39065d649639911bd8362ca6dcf_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/521e4a5e5263a97f1374a5a2f9026fda95951280_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/546c198a632c5a6c380b4248b557fa2ca91abf46_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/55a3f5e8de5dc9d72c4a1b9ac2784f76bed8e5e2_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/5a6759afa62cd90aa754f33751378435c8d15398_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/5b608167aa2fe32bd45db5563f20fca2b9ba2fec_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/5b77467834692926fb1965bf268276dd72651984_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/5db04b639e7d0124d32ad079e577a73461c8ab88_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/5db350773ae85b25737251d920f130423e65760e_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/5fdd3b51428460e406191cc8671d98047b6e83dc_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/60eba902d057dbbe29252726facf7375991f270e_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/6487f2815a117837171a17b5fd8f22887c04df13_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/64db64a2d9bbf564adcb77b7ef4327626a5c05eb_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/710da2da58958fe46bb02e041b5c5cae457b0471_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/713186d3eb70e51797c2db8a285f23a3ec1fa84e_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/72d04dd0a79d3a9ed56f6d51127eccff7e69334f_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/757ce5ccdda5456c0606708cf4a74feb6dd9a98d_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/7a6a888aa388a9b6efd2f4bcf0c2fd35d36f0f80_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/7ecff0bcce915d80bb022c4cbc10bf8c69041ad9_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/861f7f9d30933df7bda664a010ffb516bb1cccef_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/8703849612814be0c71f1107a6971ae64af26392_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/8add7b8ce60c6abdab36a47fc08edbad3a600c49_m.png',
+'https://dressfancy.org/mp3/Found/Found2/91a739338108b044d584a6655e2aa5ae191285d5_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/9a4c5e9b473ef51039a3261b1eacf3bd498ecc76_m.png',
+'https://dressfancy.org/mp3/Found/Found2/9d9eadaabce4501c4c5716704e1e4cc4f964946e_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/a2b414ccd2abba28400b6797bde4d7c509858ce3_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/a639c3a186a2aec58c6977d724c36b068bbdce0a_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/aa9f04fa138de5c7bd2e75a7653d308063be7e14_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/ae062cba6829517e5d5ebb6d9f5f9cd00bf0b26a_m.png',
+'https://dressfancy.org/mp3/Found/Found2/af096ef6e6037c4aa0ea363156e3ca9758eabf30_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/b263e7258ba8ab8512f7d813b1e35dfceb86a518_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/b70a0de8358577763ae009b5ea557ccb5aa97346_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/b7eb6196230def3972ed2b683b38a289ee53a52d_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/bb7c4b242e23789e5e3435f70bcddf1104a9cb1b_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/c03f7e93a4dfc76132ba8984628d75f2e4e5b2c5_m.png',
+'https://dressfancy.org/mp3/Found/Found2/c1aa7a56c458cbcce19abc8824e203400604f7a3_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/c5eb4242c85b7c76c0ab90d09f36cb9c89cfd2d2_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/c7115f4e01657d014de39b01de1075295d33805f_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/ca5d6eb73955e238eaf820062162caf3bb90b0ce_m.png',
+'https://dressfancy.org/mp3/Found/Found2/cb2a04cd24acc3b64f51625712fe6ad7f8d7df72_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/ce744755f7ce7116fe0242659ba4a81a5d0991a1_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/d3950316ac5aceff5ede08a6e13bc24f08304405_m.png',
+'https://dressfancy.org/mp3/Found/Found2/dcebeda94f8accd9ca15170b709af7c7d9695162_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/de2a12d26928bece8692f87c524e154d6cea1b36_m.gif',
+'https://dressfancy.org/mp3/Found/Found2/e4f9149a534b23580f2a236a1d9215a60fb20dce_m.jpg',
+'https://dressfancy.org/mp3/Found/Found2/f28a75b83c6998fae370a6ad9d8f8b97fe8fc1d5_m.jpg',
+                     ];
 
-    var currentTrackIndex = 0;
+var currentTrackIndex = 0;
 
-    function getRandomItem(array) {
-        return array[Math.floor(Math.random() * array.length)];
-    }
-
-function setTrack(index) {
-    currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
-    var track = mp3Files[currentTrackIndex];
-
-    console.log("Attempting to play track URL:", track); // Debugging line
-
-    if (track) {
-        var audioPlayer = Essential_Audio.Audio[currentTrackIndex];
-        if (audioPlayer) {
-            audioPlayer.src = track; // Assuming the player expects a 'src' property
-            Essential_Audio.Play(currentTrackIndex); // Assuming the player has a 'Play' method
-        } else {
-            console.error("Audio player for track index " + currentTrackIndex + " not found.");
-        }
-
-        // Update the background image
-        var randomImage = getRandomItem(imageFiles);
-        document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
-    } else {
-        console.error("Track URL is null or undefined for index " + currentTrackIndex);
-    }
+function getRandomItem(array) {
+    return array[Math.floor(Math.random() * array.length)];
 }
 
+function setTrack(index) {
+    currentTrackIndex = index;
+    var track = mp3Files[currentTrackIndex];
+
+    var playerDiv = document.getElementById('player1');
+    playerDiv.setAttribute('data-url', track);
+    Essential_Audio.init(); // Re-initialize the player to load the new track
+
+    var randomImage = getRandomItem(imageFiles);
+    document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
+}
+
+function nextTrack() {
+    setTrack((currentTrackIndex + 1) % mp3Files.length);
+}
 
 window.onload = function() {
-    Essential_Audio.init(); // Initialize the audio player
-    nextTrack(); // Start playback with the first track
+    setTrack(0); // Initialize the player with the first track
 };
-
-    // Since the Essential Audio Player might handle its own 'ended' event,
-    // you'll need to check if you should still use this or if the player has a way to handle it.
-    // document.getElementById('audio-player').addEventListener('ended', nextTrack);
 </script>
+
 </body>
 </html>
