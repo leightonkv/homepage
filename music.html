@@ -1646,36 +1646,34 @@
         return array[Math.floor(Math.random() * array.length)];
     }
 
-    function setTrack(index) {
-        // Wrap around the index if it goes out of bounds
-        currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
-        var track = mp3Files[currentTrackIndex];
+function setTrack(index) {
+    currentTrackIndex = (index + mp3Files.length) % mp3Files.length;
+    var track = mp3Files[currentTrackIndex];
 
-        // Since the new player handles its own audio element, we retrieve it through its API
+    console.log("Attempting to play track URL:", track); // Debugging line
+
+    if (track) {
         var audioPlayer = Essential_Audio.Audio[currentTrackIndex];
         if (audioPlayer) {
-            audioPlayer.src = track;
-            audioPlayer.play();
+            audioPlayer.src = track; // Assuming the player expects a 'src' property
+            Essential_Audio.Play(currentTrackIndex); // Assuming the player has a 'Play' method
+        } else {
+            console.error("Audio player for track index " + currentTrackIndex + " not found.");
         }
 
         // Update the background image
         var randomImage = getRandomItem(imageFiles);
         document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
+    } else {
+        console.error("Track URL is null or undefined for index " + currentTrackIndex);
     }
+}
 
-    function nextTrack() {
-        // Select a random index from the mp3Files array
-        var randomIndex = Math.floor(Math.random() * mp3Files.length);
 
-        // Set the track to the randomly selected index
-        setTrack(randomIndex);
-    }
-
-    // Set random media on page load
-    window.onload = function() {
-        Essential_Audio.init(); // Ensure the Essential Audio Player is initialized
-        nextTrack();
-    };
+window.onload = function() {
+    Essential_Audio.init(); // Initialize the audio player
+    nextTrack(); // Start playback with the first track
+};
 
     // Since the Essential Audio Player might handle its own 'ended' event,
     // you'll need to check if you should still use this or if the player has a way to handle it.
