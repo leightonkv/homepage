@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Last.fm Recent Tracks</title>
+    <!-- Updated Google Fonts Link -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
         body {
@@ -13,7 +14,7 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             height: 100vh;
         }
@@ -21,18 +22,9 @@
             width: 80%;
             max-width: 600px;
         }
-        .track {
-            margin-bottom: 10px;
-        }
-        .track-header {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .track-time {
-            font-size: 0.8em;
-            color: gray;
-        }
     </style>
+    <!-- Favicon (Optional) -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
     <div id="lastfm-tracks">Loading recent tracks...</div>
@@ -47,13 +39,9 @@
         })
         .then(data => {
             const tracks = data.recenttracks.track;
-            let html = '<div class="track-header">Artist - Track</div>';
+            let html = '';
             tracks.forEach(track => {
-                const date = track.date ? new Date(parseInt(track.date.uts, 10) * 1000) : new Date();
-                html += `<div class="track">
-                            <div>${track.artist["#text"]} - ${track.name}</div>
-                            <div class="track-time">${date.toLocaleString()}</div>
-                         </div>`;
+                html += `<div>${track.artist["#text"]} - ${track.name}</div>`;
             });
             document.getElementById('lastfm-tracks').innerHTML = html;
         })
