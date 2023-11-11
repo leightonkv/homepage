@@ -21,8 +21,7 @@
         #lastfm-tracks {
             width: 80%;
             max-width: 600px;
-            margin-top: 30px; /* Added some margin at the top for spacing */
-        }
+                    }
         .track {
             margin-bottom: 15px;
             padding: 10px;
@@ -46,8 +45,12 @@
 
 
 
-    <script>
-        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
+<script>
+    let page = 1; // Starting page
+    const tracksPerPage = 5; // Adjust based on how many tracks you want per page
+
+    function loadTracks() {
+        fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json&limit=${tracksPerPage}&page=${page}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -56,10 +59,10 @@
         })
         .then(data => {
             const tracks = data.recenttracks.track;
-            let html = '';
+            let html = document.getElementById('lastfm-tracks').innerHTML;
             tracks.forEach(track => {
                 const date = track.date ? new Date(track.date.uts * 1000) : new Date();
-                const formattedDate = date.toLocaleString(); // Converts the date to a readable format
+                const formattedDate = date.toLocaleString();
                 html += `
                     <div class="track">
                         <div><strong></strong> ${track.artist["#text"]}</div>
@@ -73,6 +76,19 @@
             console.error('Error:', error);
             document.getElementById('lastfm-tracks').innerHTML = 'Failed to load tracks';
         });
-    </script>
+    }
+
+    // Initial load
+    loadTracks();
+
+    // Infinite scroll implementation
+    window.onscroll = function() {
+        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+            page++;
+            loadTracks();
+        }
+    };
+</script>
+
 </body>
 </html>
