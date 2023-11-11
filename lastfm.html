@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Last.fm Recent Tracks</title>
-    <!-- Updated Google Fonts Link -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
         body {
@@ -14,7 +13,7 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
         }
@@ -22,15 +21,24 @@
             width: 80%;
             max-width: 600px;
         }
+        .track {
+            margin-bottom: 10px;
+        }
+        .track-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .track-time {
+            font-size: 0.8em;
+            color: gray;
+        }
     </style>
-    <!-- Favicon (Optional) -->
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
     <div id="lastfm-tracks">Loading recent tracks...</div>
 
     <script>
-        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
+        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=YOUR_API_KEY&format=json')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -39,9 +47,13 @@
         })
         .then(data => {
             const tracks = data.recenttracks.track;
-            let html = '';
+            let html = '<div class="track-header">Artist - Track</div>';
             tracks.forEach(track => {
-                html += `<div>${track.artist["#text"]} - ${track.name}</div>`;
+                const date = track.date ? new Date(parseInt(track.date.uts, 10) * 1000) : new Date();
+                html += `<div class="track">
+                            <div>${track.artist["#text"]} - ${track.name}</div>
+                            <div class="track-time">${date.toLocaleString()}</div>
+                         </div>`;
             });
             document.getElementById('lastfm-tracks').innerHTML = html;
         })
