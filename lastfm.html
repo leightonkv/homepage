@@ -11,32 +11,40 @@
             color: black;
             background-color: white;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
         }
         #lastfm-tracks {
             width: 80%;
             max-width: 600px;
+            margin-top: 30px; /* Added some margin at the top for spacing */
         }
         .track {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd; /* Subtle separator */
         }
         .timestamp {
             font-size: 0.8em;
             color: grey;
         }
         h2 {
+            font-size: 2em;
             margin: 20px 0;
+            text-align: center; /* Center the heading */
         }
     </style>
 </head>
 <body>
     <h2>Recent Tracks</h2>
     <div id="lastfm-tracks">Loading recent tracks...</div>
+
+
+
 
     <script>
         fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
