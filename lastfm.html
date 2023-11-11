@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last.fm Recent Tracks</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: black;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #lastfm-tracks {
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id="lastfm-tracks">Loading recent tracks...</div>
+
+    <script>
+        fetch('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
+        .then(response => response.json())
+        .then(data => {
+            const tracks = data.recenttracks.track;
+            let html = '';
+            tracks.forEach(track => {
+                html += `<div>${track.artist["#text"]} - ${track.name}</div>`;
+            });
+            document.getElementById('lastfm-tracks').innerHTML = html;
+        })
+        .catch(error => console.error('Error:', error));
+    </script>
+
+    <script src="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"></script>
+</body>
+</html>
