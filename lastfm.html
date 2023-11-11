@@ -45,12 +45,8 @@
 
 
 
-<script>
-    let page = 1; // Starting page
-    const tracksPerPage = 5; // Adjust based on how many tracks you want per page
-
-    function loadTracks() {
-        fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json&limit=${tracksPerPage}&page=${page}`)
+    <script>
+        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,14 +55,14 @@
         })
         .then(data => {
             const tracks = data.recenttracks.track;
-            let html = document.getElementById('lastfm-tracks').innerHTML;
+            let html = '';
             tracks.forEach(track => {
                 const date = track.date ? new Date(track.date.uts * 1000) : new Date();
-                const formattedDate = date.toLocaleString();
+                const formattedDate = date.toLocaleString(); // Converts the date to a readable format
                 html += `
                     <div class="track">
-                        <div><strong></strong> ${track.artist["#text"]}</div>
-                        <div><strong></strong> ${track.name}</div>
+                        <div><strong>Artist:</strong> ${track.artist["#text"]}</div>
+                        <div><strong>Track:</strong> ${track.name}</div>
                         <div class="timestamp">${formattedDate}</div>
                     </div>`;
             });
@@ -76,19 +72,7 @@
             console.error('Error:', error);
             document.getElementById('lastfm-tracks').innerHTML = 'Failed to load tracks';
         });
-    }
-
-    // Initial load
-    loadTracks();
-
-    // Infinite scroll implementation
-    window.onscroll = function() {
-        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-            page++;
-            loadTracks();
-        }
-    };
-</script>
+    </script>
 
 </body>
 </html>
