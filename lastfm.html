@@ -28,14 +28,23 @@
             border-radius: 10px;
             overflow: hidden;
         }
-        .track {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 20px;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            border-bottom: 1px solid #eee;
-        }
+ .track {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adjust this value as needed for more space */
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.track > div:first-child {
+    font-weight: bold; /* Make the artist name bold */
+    margin-bottom: 3px; /* Add some margin below the artist name */
+}
+
+.track > div:nth-child(2) {
+    font-style: italic; /* Style the track title */
+}
         .track:hover {
             background-color: #f9f9f9;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
