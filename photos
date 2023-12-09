@@ -1,0 +1,23 @@
+<!-- /path/to/your/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leighton Digital Photo Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Leighton Digital Photo Gallery</h1>
+    </header>
+    <main id="photo-gallery">
+        <!-- Photos will be dynamically inserted here -->
+        <div id="loading" style="display:none;">Loading more photos...</div>
+    </main>
+    <footer>
+        <p>©Leighton</p>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>
