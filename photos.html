@@ -59,16 +59,20 @@
     <header>
         <h1>📷🌍</h1>
     </header>
-
+    <!-- Navigation menu -->
+    <nav>
+        <button onclick="showGallery('georgia')">Georgia (August 2023)</button>
+        <button onclick="showGallery('usa')">USA (December 2023)</button>
+    </nav>
     <!-- Gallery for Georgia -->
-    <div class="photo-gallery">
+    <div id="georgia" class="photo-gallery">
         <!-- Existing photos from your code -->
         <img src="https://lh3.googleusercontent.com/pw/ADCreHdEY2NV-Ap-qrS-Tuoa2WnBakP_ltf8Z4NkDr_cIJ2On7OZWzdz3dedVi1_6p72UN_S3D5dZxfezCxIhQQZUquVJ2r85UDyEbKP4_CTQCORKlotkZ_D1Pe4e5eF9xiTs9Z0IIuGYhsq4hnPbIdfQ-8S=w1336-h1782-s-no-gm?authuser=0" alt="Description of Photo 1">
         <!-- ... (rest of your Georgia photos) ... -->
     </div>
 
     <!-- Gallery for USA -->
-    <div class="photo-gallery" style="display:none;">
+    <div id="usa" class="photo-gallery" style="display:none;">
         <!-- Add USA photos here -->
         <!-- Example: <img src="URL_OF_USA_PHOTO" alt="Description of USA Photo"> -->
     </div>
