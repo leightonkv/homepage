@@ -1987,6 +1987,9 @@ window.onload = function() {
     setTrack(currentTrackIndex);
 };
 
+    // Added 'ended' event listener
+document.getElementById('player1').addEventListener('ended', nextTrack);
+    
 // Keyboard controls
 document.addEventListener('keydown', function(event) {
     var player = document.getElementById('player1');
