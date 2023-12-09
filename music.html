@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://leighton.digital/essential_audio.css">
-    <script src="https://leighton.digital/essential_audio.js"></script>
+
     <title>Sound and Vision</title>
   <style>
     /* Custom styles */
@@ -46,8 +45,9 @@
 <body>
 
 <div id="random-media"></div>
-<div class="essential_audio" id="player1" data-autoplay></div>
+<audio id="player1" controls autoplay></audio>
 <button class="track-control" onclick="nextTrack()">CHANGE YOUR TUNE</button>
+
 
 <script>
 // Your array of MP3 files and image files
@@ -1963,47 +1963,46 @@ var imageFiles = ['https://dressfancy.org/mp3/01-23-09face05_900.jpg',
                      ];
 var currentTrackIndex = 0;
 
-// Function to get a random item from an array
 function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
-// Function to set a track and background image based on an index
 function setTrack(index) {
-    // Stop the currently playing track if any
-    Essential_Audio.Stop();
-
-    // Update the track index
     currentTrackIndex = index;
-
-    // Get the new track URL
     var track = mp3Files[currentTrackIndex];
+    var player = document.getElementById('player1');
+    player.src = track;
+    player.play();
 
-    // Find the player element and set its data-url attribute to the new track
-    var playerDiv = document.getElementById('player1');
-    playerDiv.setAttribute('data-url', track);
-
-    // Re-initialize the player to load the new track
-    Essential_Audio.init();
-
-    // Play the new track
-    Essential_Audio.Play("player1");
-
-    // Set a random background image
     var randomImage = getRandomItem(imageFiles);
     document.getElementById('random-media').style.backgroundImage = 'url(' + randomImage + ')';
 }
 
-// Function to go to the next track
 function nextTrack() {
     setTrack((currentTrackIndex + 1) % mp3Files.length);
 }
 
-// Initialize the player with a random track when the window loads
 window.onload = function() {
-    currentTrackIndex = Math.floor(Math.random() * mp3Files.length); // Randomize the starting song
-    setTrack(currentTrackIndex); // Set the first track and background
+    currentTrackIndex = Math.floor(Math.random() * mp3Files.length);
+    setTrack(currentTrackIndex);
 };
+
+// Keyboard controls
+document.addEventListener('keydown', function(event) {
+    var player = document.getElementById('player1');
+    switch(event.key) {
+        case ' ':
+            if(player.paused) {
+                player.play();
+            } else {
+                player.pause();
+            }
+            break;
+        case 'ArrowRight':
+            nextTrack();
+            break;
+    }
+});
 </script>
 
 </body>
