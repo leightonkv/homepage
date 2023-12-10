@@ -3,44 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensure proper scaling on mobile devices -->
     <title>Sound and Vision</title>
-  <style>
-    /* Custom styles */
-    body {
-        font-family: 'Roboto', sans-serif;
-        background-color: white;
-        color: black;
-        margin: 0;
-        padding-top: 10px; /* Adjust padding to prevent content from being hidden behind the fixed player */
-    }
-    .essential_audio {
-        position: fixed; /* Keep the player at the top even when scrolling */
-        top: 10px; /* Position 10px from the top */
-        left: 0; /* Align to the left */
-        right: 0; /* Align to the right */
-        width: auto; /* Let it auto-adjust the width */
-        z-index: 102; /* Ensure it's above other content */
-        background: #fff; /* A background color to ensure visibility */
-    }
-    #random-media {
-        position: absolute; /* Position absolutely will respect the top offset */
-        top: 70px; /* Offset from the top by the height of the player plus some margin */
-        width: 100%;
-        height: calc(90vh - 60px); /* Subtract the top offset from the height */
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center top;
-        z-index: 101; /* Below the fixed player but above the rest of the content */
-    }
-    .track-control {
-        position: fixed; /* Fix position to the viewport */
-        top: 10px; /* Position it 10px from the top */
-        right: 5px; /* Position it 5px from the right */
-        z-index: 103; /* Above all other elements */
-    }
-</style>
-    
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: white;
+            color: black;
+            margin: 0;
+            padding-top: 10px; /* Adjust padding to prevent content from being hidden behind the fixed player */
+        }
+        .essential_audio {
+            position: fixed; /* Keep the player at the top even when scrolling */
+            top: 10px; /* Position 10px from the top */
+            left: 0; /* Align to the left */
+            right: 0; /* Align to the right */
+            width: auto; /* Let it auto-adjust the width */
+            z-index: 102; /* Ensure it's above other content */
+            background: #fff; /* A background color to ensure visibility */
+        }
+        #random-media {
+            position: absolute; /* Position absolutely will respect the top offset */
+            top: 70px; /* Offset from the top by the height of the player plus some margin */
+            width: 100%;
+            height: calc(90vh - 60px); /* Subtract the top offset from the height */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center top;
+            z-index: 101; /* Below the fixed player but above the rest of the content */
+        }
+        .track-control {
+            position: fixed; /* Fix position to the viewport */
+            top: 10px; /* Position it 10px from the top */
+            right: 5px; /* Position it 5px from the right */
+            z-index: 103; /* Above all other elements */
+        }
+        /* Responsive styles for smaller screens */
+        @media screen and (max-width: 768px) {
+            #player1, .track-control {
+                font-size: 1.5em; /* Larger font size for better readability */
+                padding: 10px; /* Increased padding for easier interaction */
+            }
+            .track-control {
+                width: auto; /* Allow the button to resize according to its content */
+            }
+        }
+    </style>
 </head>
 <body>
 
