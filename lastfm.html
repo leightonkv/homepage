@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Last.fm Recent Tracks</title>
+    <title>Last.fm Data Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
     <style>
         body {
@@ -18,7 +18,7 @@
             flex-direction: column;
             min-height: 100vh;
         }
-        #lastfm-tracks {
+        #lastfm-data {
             width: 100%;
             max-width: 500px;
             padding: 20px;
@@ -26,7 +26,7 @@
             border-radius: 10px;
             background: #fff;
         }
-        .track {
+        .data-entry {
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -34,10 +34,10 @@
             border-bottom: 1px solid #eee;
             transition: background-color 0.3s;
         }
-        .track:last-child {
+        .data-entry:last-child {
             border-bottom: none;
         }
-        .track:hover {
+        .data-entry:hover {
             background-color: #f9f9f9;
         }
         .timestamp {
@@ -51,37 +51,72 @@
             margin: 20px 0;
             color: #333;
         }
+        select {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
-    <h2>Recently Listened Tracks</h2>
-    <div id="lastfm-tracks">Loading...</div>
+    <h2>Last.fm Data Viewer</h2>
+    <select id="data-type">
+        <option value="recenttracks">Recently Listened Tracks</option>
+        <option value="toptracks">Top Tracks</option>
+        <option value="topartists">Top Artists</option>
+    </select>
+    <div id="lastfm-data">Loading...</div>
     <script>
-        fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+        const dataTypeSelect = document.getElementById('data-type');
+        dataTypeSelect.addEventListener('change', loadData);
+
+        function loadData() {
+            const dataType = dataTypeSelect.value;
+            let apiUrl = 'https://ws.audioscrobbler.com/2.0/?method=user.';
+            switch (dataType) {
+                case 'recenttracks':
+                    apiUrl += 'getrecenttracks';
+                    break;
+                case 'toptracks':
+                    apiUrl += 'gettoptracks';
+                    break;
+                case 'topartists':
+                    apiUrl += 'gettopartists';
+                    break;
             }
-            return response.json();
-        })
-        .then(data => {
-            const tracks = data.recenttracks.track;
-            let html = '';
-            tracks.forEach(track => {
-                const date = track.date ? new Date(track.date.uts * 1000) : 'Now Playing';
-                const formattedDate = typeof date === 'string' ? date : date.toLocaleString();
-                html += `
-                    <div class="track">
-                        <div><strong>${track.artist["#text"]}</strong> - ${track.name}</div>
-                        <div class="timestamp">${formattedDate}</div>
-                    </div>`;
+            apiUrl += '&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json';
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => displayData(data, dataType))
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('lastfm-data').innerHTML = 'Failed to load data';
             });
-            document.getElementById('lastfm-tracks').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('lastfm-tracks').innerHTML = 'Failed to load tracks';
-        });
+        }
+
+        function displayData(data, type) {
+            let html = '';
+            let items = [];
+            if (type === 'recenttracks') {
+                items = data.recenttracks.track;
+            } else if (type === 'toptracks') {
+                items = data.toptracks.track;
+            } else if (type === 'topartists') {
+                items = data.topartists.artist;
+            }
+            items.forEach(item => {
+                const name = item.name;
+                const artist = item.artist ? item.artist.name || item.artist["#text"] : 'Various Artists';
+                html += `<div class="data-entry">
+                    <div><strong>${artist}</strong> - ${name}</div>
+                </div>`;
+            });
+            document.getElementById('lastfm-data').innerHTML = html;
+        }
+
+        // Initial load
+        loadData();
     </script>
 </body>
 </html>
