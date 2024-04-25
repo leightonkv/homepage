@@ -40,17 +40,22 @@
         .data-entry:hover {
             background-color: #f9f9f9;
         }
-        select, .loading {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        .timestamp {
+            font-size: 0.75em;
+            color: #999;
+            align-self: flex-end;
         }
         h2 {
             font-size: 2em;
             font-weight: 300;
             margin: 20px 0;
             color: #333;
+        }
+        select {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
@@ -61,44 +66,37 @@
         <option value="toptracks">Top Tracks</option>
         <option value="topartists">Top Artists</option>
     </select>
-    <select id="time-range">
-        <option value="7day">Last 7 days</option>
-        <option value="1month">Last 30 days</option>
-        <option value="3month">Last 90 days</option>
-        <option value="6month">Last 180 days</option>
-        <option value="12month">Last 365 days</option>
-        <option value="overall">All time</option>
-    </select>
     <div id="lastfm-data">Loading...</div>
-    <div class="loading">Loading more...</div>
     <script>
         const dataTypeSelect = document.getElementById('data-type');
-        const timeRangeSelect = document.getElementById('time-range');
-        let currentPage = 1;
-        let isLoading = false;
+        dataTypeSelect.addEventListener('change', loadData);
 
         function loadData() {
-            if (isLoading) return;
-            isLoading = true;
             const dataType = dataTypeSelect.value;
-            const timeRange = timeRangeSelect.value;
-            let apiUrl = `https://ws.audioscrobbler.com/2.0/?method=user.${dataType}&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json&limit=5&page=${currentPage}&period=${timeRange}`;
+            let apiUrl = 'https://ws.audioscrobbler.com/2.0/?method=user.';
+            switch (dataType) {
+                case 'recenttracks':
+                    apiUrl += 'getrecenttracks';
+                    break;
+                case 'toptracks':
+                    apiUrl += 'gettoptracks';
+                    break;
+                case 'topartists':
+                    apiUrl += 'gettopartists';
+                    break;
+            }
+            apiUrl += '&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json';
             fetch(apiUrl)
             .then(response => response.json())
-            .then(data => {
-                displayData(data, dataType);
-                currentPage++;
-                isLoading = false;
-            })
+            .then(data => displayData(data, dataType))
             .catch(error => {
                 console.error('Error:', error);
                 document.getElementById('lastfm-data').innerHTML = 'Failed to load data';
-                isLoading = false;
             });
         }
 
         function displayData(data, type) {
-            let html = document.getElementById('lastfm-data').innerHTML;
+            let html = '';
             let items = [];
             if (type === 'recenttracks') {
                 items = data.recenttracks.track;
@@ -119,15 +117,6 @@
 
         // Initial load
         loadData();
-        dataTypeSelect.addEventListener('change', () => { currentPage = 1; loadData(); });
-        timeRangeSelect.addEventListener('change', () => { currentPage = 1; loadData(); });
-
-        // Infinite scrolling
-        window.addEventListener('scroll', () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                loadData();
-            }
-        });
     </script>
 </body>
 </html>
