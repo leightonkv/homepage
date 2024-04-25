@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Last.fm Recent Tracks</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
     <style>
-        /* Base styles */
         body {
             font-family: 'Roboto', sans-serif;
             color: #333;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: #fafafa;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -18,57 +17,45 @@
             align-items: center;
             flex-direction: column;
             min-height: 100vh;
-            text-shadow: 1px 1px 1px #fff;
         }
         #lastfm-tracks {
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            background: #fff;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            border: 1px solid #e1e1e1;
             border-radius: 10px;
-            overflow: hidden;
+            background: #fff;
         }
- .track {
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* Adjust this value as needed for more space */
-    margin-bottom: 15px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.track > div:first-child {
-    font-weight: bold; /* Make the artist name bold */
-    margin-bottom: 3px; /* Add some margin below the artist name */
-}
-
-.track > div:nth-child(2) {
-    font-style: italic; /* Style the track title */
-}
+        .track {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+        .track:last-child {
+            border-bottom: none;
+        }
         .track:hover {
             background-color: #f9f9f9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .timestamp {
-            font-size: 0.8em;
-            color: #888;
-            margin-left: auto;
+            font-size: 0.75em;
+            color: #999;
+            align-self: flex-end;
         }
         h2 {
-            font-size: 2.5em;
+            font-size: 2em;
+            font-weight: 300;
             margin: 20px 0;
-            color: #fff;
-            text-align: center;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <h2>Recently Listened To</h2>
-    <div id="lastfm-tracks">Loading recent tracks...</div>
-
-
-
-
+    <h2>Recently Listened Tracks</h2>
+    <div id="lastfm-tracks">Loading...</div>
     <script>
         fetch('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=leightonj&api_key=ff2209b2c27d048fb95424eda1dd78e1&format=json')
         .then(response => {
@@ -81,12 +68,11 @@
             const tracks = data.recenttracks.track;
             let html = '';
             tracks.forEach(track => {
-                const date = track.date ? new Date(track.date.uts * 1000) : new Date();
-                const formattedDate = date.toLocaleString(); // Converts the date to a readable format
+                const date = track.date ? new Date(track.date.uts * 1000) : 'Now Playing';
+                const formattedDate = typeof date === 'string' ? date : date.toLocaleString();
                 html += `
                     <div class="track">
-                        <div><strong></strong> ${track.artist["#text"]}</div>
-                        <div><strong></strong> ${track.name}</div>
+                        <div><strong>${track.artist["#text"]}</strong> - ${track.name}</div>
                         <div class="timestamp">${formattedDate}</div>
                     </div>`;
             });
@@ -97,6 +83,5 @@
             document.getElementById('lastfm-tracks').innerHTML = 'Failed to load tracks';
         });
     </script>
-
 </body>
 </html>
