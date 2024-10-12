@@ -2,102 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensure proper scaling on mobile devices -->
-    <title>Sound and Vision</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Music Player with Dynamic Images</title>
     <style>
-        /* Custom styles */
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: white;
-            color: black;
-            margin: 0;
-            padding-top: 10px; /* Adjust padding to prevent content from being hidden behind the fixed player */
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .essential_audio {
-            position: fixed; /* Keep the player at the top even when scrolling */
-            top: 10px; /* Position 10px from the top */
-            left: 0; /* Align to the left */
-            right: 0; /* Align to the right */
-            width: auto; /* Let it auto-adjust the width */
-            z-index: 102; /* Ensure it's above other content */
-            background: #fff; /* A background color to ensure visibility */
-        }
-        #random-media {
-            position: absolute; /* Position absolutely will respect the top offset */
-            top: 70px; /* Offset from the top by the height of the player plus some margin */
+
+        .music-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 600px;
             width: 100%;
-            height: calc(90vh - 60px); /* Subtract the top offset from the height */
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center top;
-            z-index: 101; /* Below the fixed player but above the rest of the content */
         }
-        .track-control {
-            position: fixed; /* Fix position to the viewport */
-            top: 10px; /* Position it 10px from the top */
-            right: 5px; /* Position it 5px from the right */
-            z-index: 103; /* Above all other elements */
+
+        .music-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            margin-right: 15px;
         }
-        /* Responsive styles for smaller screens */
-        @media screen and (max-width: 768px) {
-            #player1, .track-control {
-                font-size: 1.5em; /* Larger font size for better readability */
-                padding: 10px; /* Increased padding for easier interaction */
-            }
-            .track-control {
-                width: auto; /* Allow the button to resize according to its content */
-            }
+
+        .track-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .song-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        .post-date {
+            color: gray;
+            font-size: 0.9em;
+            margin: 5px 0 10px;
+        }
+
+        .controls {
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
+    <h1>Enhanced Music Player</h1>
 
-<h1>Music Player</h1>
+    <div class="music-item">
+        <img id="cover-image" src="https://via.placeholder.com/80" alt="Cover Image"> <!-- Placeholder for cover image -->
+        <div class="track-info">
+            <p class="song-title" id="song-title"></p>
+            <p class="post-date" id="post-date"></p>
+            <audio id="audio-player" controls autoplay></audio>
+        </div>
+    </div>
 
-    <!-- Audio player -->
-    <audio id="audio-player" controls autoplay></audio>
-    <button onclick="nextTrack()">Next Track</button>
-
-    <!-- Track info display area -->
-    <div id="track-info" class="track-info">
-        <p class="song-title" id="song-title"></p>
-        <p class="post-date" id="post-date"></p>
+    <div class="controls">
+        <button onclick="prevTrack()">⏮️ Previous</button>
+        <button onclick="nextTrack()">⏭️ Next</button>
     </div>
 
     <script>
-        // Array of tracks populated from the CSV data
-        var tracks = [
+        // Array of image files to select from randomly
+        const imageFiles = [
+            'https://leightondigital.b-cdn.net/mp3/01-23-09face05_900.jpg',
+            'https://leightondigital.b-cdn.net/mp3/027.jpg',
+            // add the rest of the URLs here
+            'https://leightondigital.b-cdn.net/mp3/zardoz%20head.jpg'
+        ];
+
+        // Array of tracks with URLs, song names, dates, and dynamically assigned images
+        const tracks = [
             {url: "https://leightondigital.b-cdn.net/mp3/Lake%20Lounge.mp3", name: "Klangkollektor - Lake Lounge", date: "19 July 2024"},
             {url: "https://leightondigital.b-cdn.net/mp3/Orient%20Express%20(Pogo%20Mix).mp3", name: "CCCP - Orient Express (Pogo Mix)", date: "19 July 2024"},
             {url: "https://leightondigital.b-cdn.net/mp3/You%20Can%20Run%20(Razormaid%20Mix).mp3", name: "3 Times 6 - You Can Run (Razormaid Mix)", date: "19 July 2024"},
             {url: "https://leightondigital.b-cdn.net/mp3/Nacht%20Op%20Het%20Water.mp3", name: "Krampfhaft - Nacht Op Het Water", date: "19 July 2024"},
-            {url: "https://leightondigital.b-cdn.net/mp3/Totem%20Mollusca.mp3", name: "Ekolalli - Totem Mollusca", date: "19 July 2024"}
+            {url: "https://leightondigital.b-cdn.net/mp3/Totem%20Mollusca.mp3", name: "Ekolali - Totem Mollusca", date: "19 July 2024"}
             // Add further entries here as needed
         ];
 
-        var currentIndex = 0;
+        let currentIndex = 0;
 
-        // Load a track and update song info
+        // Function to get a random image from the imageFiles array
+        function getRandomImage() {
+            return imageFiles[Math.floor(Math.random() * imageFiles.length)];
+        }
+
+        // Load a track and update the player and info
         function loadTrack(index) {
-            var player = document.getElementById("audio-player");
-            var track = tracks[index];
-            player.src = track.url;
+            const player = document.getElementById("audio-player");
+            const track = tracks[index];
 
-            // Update song title and date
+            player.src = track.url;
             document.getElementById("song-title").innerText = track.name;
-            document.getElementById("post-date").innerText = "Posted on: " + track.date;
+            document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
+            document.getElementById("cover-image").src = getRandomImage(); // Assign a random image
         }
 
         // Initial load
         loadTrack(currentIndex);
 
-        // Load the next track when 'Next Track' button is clicked
-        function nextTrack() {
-            currentIndex = (currentIndex + 1) % tracks.length; // Loop back to start if at end
+        // Autoplay the next track when the current one ends
+        document.getElementById("audio-player").addEventListener("ended", nextTrack);
+
+        // Load the previous track
+        function prevTrack() {
+            currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
             loadTrack(currentIndex);
             document.getElementById("audio-player").play();
         }
+
+        // Load the next track
+        function nextTrack() {
+            currentIndex = (currentIndex + 1) % tracks.length;
+            loadTrack(currentIndex);
+            document.getElementById("audio-player").play();
+        }
+
+        // Keyboard controls for navigation
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "ArrowRight") { // Right arrow for next
+                nextTrack();
+            } else if (event.key === "ArrowLeft") { // Left arrow for previous
+                prevTrack();
+            }
+        });
     </script>
 </body>
 </html>
