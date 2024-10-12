@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Music Player with Dynamic Images</title>
+    <title>Enhanced Music Player with Random Track and Image</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,7 +79,7 @@
             'https://leightondigital.b-cdn.net/mp3/zardoz%20head.jpg'
         ];
 
-        // Array of tracks with URLs, song names, dates, and dynamically assigned images
+        // Array of tracks with URLs, song names, and dates
         const tracks = [
             {url: "https://leightondigital.b-cdn.net/mp3/Lake%20Lounge.mp3", name: "Klangkollektor - Lake Lounge", date: "19 July 2024"},
             {url: "https://leightondigital.b-cdn.net/mp3/Orient%20Express%20(Pogo%20Mix).mp3", name: "CCCP - Orient Express (Pogo Mix)", date: "19 July 2024"},
@@ -89,14 +89,14 @@
             // Add further entries here as needed
         ];
 
-        let currentIndex = 0;
+        let currentIndex;
 
-        // Function to get a random image from the imageFiles array
-        function getRandomImage() {
-            return imageFiles[Math.floor(Math.random() * imageFiles.length)];
+        // Function to get a random item from an array
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
         }
 
-        // Load a track and update the player and info
+        // Function to load a track and update player, info, and image
         function loadTrack(index) {
             const player = document.getElementById("audio-player");
             const track = tracks[index];
@@ -104,11 +104,14 @@
             player.src = track.url;
             document.getElementById("song-title").innerText = track.name;
             document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
-            document.getElementById("cover-image").src = getRandomImage(); // Assign a random image
+            document.getElementById("cover-image").src = getRandomItem(imageFiles); // Assign a random image
         }
 
-        // Initial load
-        loadTrack(currentIndex);
+        // Select a random track on page load
+        window.onload = function() {
+            currentIndex = Math.floor(Math.random() * tracks.length); // Randomize the starting track
+            loadTrack(currentIndex);
+        };
 
         // Autoplay the next track when the current one ends
         document.getElementById("audio-player").addEventListener("ended", nextTrack);
@@ -138,3 +141,4 @@
     </script>
 </body>
 </html>
+
