@@ -191,7 +191,7 @@
     </div>
 
     <!-- Hidden audio player -->
-    <audio id="audio-player" autoplay></audio>
+    <audio id="audio-player"></audio>
 
     <script>
         // Array of image files to select from randomly
@@ -214,7 +214,7 @@
 
         let allTracks = []; // Will contain tracks with added day, month, and year properties
         let filteredTracks = []; // Tracks after filtering by month and year
-        let currentIndex;
+        let currentIndex = 0;
         let previousIndices = []; // To keep track of played tracks for "Previous" button
 
         const player = document.getElementById("audio-player");
@@ -300,7 +300,6 @@
                     previousIndices.push(currentIndex);
                     currentIndex = parseInt(this.dataset.index);
                     loadTrack(currentIndex);
-                    highlightActiveTrack();
                 });
                 trackListElement.appendChild(listItem);
             });
@@ -319,15 +318,6 @@
             });
         }
 
-        // Function to get a random index different from the current one
-        function getRandomIndex() {
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * filteredTracks.length);
-            } while (randomIndex === currentIndex && filteredTracks.length > 1);
-            return randomIndex;
-        }
-
         // Function to decode HTML entities in track names
         function decodeHtmlEntities(text) {
             var txt = document.createElement("textarea");
@@ -343,8 +333,12 @@
             document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
             document.getElementById("cover-image").src = getRandomItem(imageFiles);
             updateProgressBar(); // Reset progress bar
-            player.play();
             highlightActiveTrack();
+            // Play the track after ensuring the metadata is loaded
+            player.load();
+            player.play().catch(error => {
+                console.error('Playback failed:', error);
+            });
         }
 
         // Function to get a random item from an array
@@ -385,7 +379,9 @@
         // Toggle play/pause
         function togglePlayPause() {
             if (player.paused) {
-                player.play();
+                player.play().catch(error => {
+                    console.error('Playback failed:', error);
+                });
             } else {
                 player.pause();
             }
@@ -396,13 +392,13 @@
 
         // Load the previous track
         function prevTrack() {
-            if (previousIndices.length > 0) {
-                currentIndex = previousIndices.pop();
-                loadTrack(currentIndex);
+            if (currentIndex > 0) {
+                previousIndices.push(currentIndex);
+                currentIndex--;
             } else {
-                // If no previous track, reload current
-                loadTrack(currentIndex);
+                currentIndex = filteredTracks.length - 1; // Loop back to the last track
             }
+            loadTrack(currentIndex);
         }
 
         // Load the next track
@@ -440,3 +436,4 @@
     </script>
 </body>
 </html>
+
