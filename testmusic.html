@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Player with Date Filter</title>
+    <!-- Include Google Fonts Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        /* Filter container */
+        .filter-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            flex-wrap: wrap;
+        }
+
+        .filter-container label, .filter-container select {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: #000;
+        }
+
+        .filter-container select {
+            padding: 5px;
+        }
+
+        /* Header container */
+        .header {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        /* Song info */
+        .song-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .song-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 0;
+            color: #000;
+        }
+
+        .post-date {
+            font-size: 0.9em;
+            margin: 5px 0 0;
+            color: #000;
+        }
+
+        /* Progress bar container */
+        .progress-container {
+            flex: 2;
+            height: 10px;
+            background-color: #ccc;
+            cursor: pointer;
+            margin: 10px 20px;
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            min-width: 150px;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            background-color: #000;
+            width: 0%;
+            height: 100%;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .controls button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0 10px;
+            color: #000;
+        }
+
+        /* Centered image */
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Hide the audio player controls */
+        #audio-player {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Filter selection -->
+    <div class="filter-container">
+        <label for="month-select">Month:</label>
+        <select id="month-select" onchange="updateFilters()">
+            <option value="all">All Months</option>
+            <!-- Months will be populated dynamically -->
+        </select>
+
+        <label for="year-select">Year:</label>
+        <select id="year-select" onchange="updateFilters()">
+            <option value="all">All Years</option>
+            <!-- Years will be populated dynamically -->
+        </select>
+    </div>
+
+    <!-- Header with song info, progress bar, and controls -->
+    <div class="header">
+        <!-- Song info -->
+        <div class="song-info">
+            <p class="song-title" id="song-title"></p>
+            <p class="post-date" id="post-date"></p>
+        </div>
+        <!-- Progress bar -->
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <!-- Controls -->
+        <div class="controls">
+            <button onclick="prevTrack()">⏮️</button>
+            <button onclick="togglePlayPause()" id="play-pause-button">⏸️</button>
+            <button onclick="nextTrack()">⏭️</button>
+        </div>
+    </div>
+
+    <!-- Centered image -->
+    <div class="image-container">
+        <img id="cover-image" src="https://via.placeholder.com/600x400" alt="Cover Image">
+    </div>
+
+    <!-- Hidden audio player -->
+    <audio id="audio-player" autoplay></audio>
+
+    <script>
+        // Array of image files to select from randomly
+        const imageFiles = [
+            'https://leightondigital.b-cdn.net/mp3/ypr.png',
+            'https://leightondigital.b-cdn.net/mp3/unnamed.png',
+            'https://leightondigital.b-cdn.net/mp3/turt.png',
+            'https://leightondigital.b-cdn.net/mp3/image1.png',
+            'https://leightondigital.b-cdn.net/mp3/image2.png',
+            // Add the rest of your image URLs here
+        ];
+
+        // Array of tracks with URLs, song names, and dates
+        const tracks = [
+            {url: "https://leightondigital.b-cdn.net/13%20Sailors.mp3", name: "Plus Instruments - 13 Sailors", date: "17 July 2015"},
+            {url: "https://leightondigital.b-cdn.net/A%20Lessons%20Learned%20In%20The%20Tears%20Of%20Deceit.mp3", name: "DeViere - Lessons Learned In The Tears Of Deceit", date: "21 April 2018"},
+            {url: "https://leightondigital.b-cdn.net/a%20new%20obscurity.mp3", name: "Juanpablo &amp; Sneaker - A New Obscurity", date: "17 July 2015"},
+            {url: "https://leightondigital.b-cdn.net/Achievement%20Rallies%20Success.mp3", name: "Compassion Crew - Achievement Rallies Success", date: "17 July 2015"},
+            {url: "https://leightondigital.b-cdn.net/Air.mp3", name: "Point G - Air", date: "27 June 2015"},
+            {url: "https://leightondigital.b-cdn.net/Another%20Example.mp3", name: "Artist Name - Another Example", date: "05 May 2016"},
+            {url: "https://leightondigital.b-cdn.net/Sample%20Track.mp3", name: "Sample Artist - Sample Track", date: "12 December 2017"},
+            // Add the rest of your track objects here
+        ];
+
+        let allTracks = []; // Will contain tracks with added day, month, and year properties
+        let filteredTracks = []; // Tracks after filtering by month and year
+        let currentIndex;
+        let previousIndices = []; // To keep track of played tracks for "Previous" button
+
+        const player = document.getElementById("audio-player");
+
+        // Function to initialize the tracks with day, month, and year
+        function initializeTracks() {
+            allTracks = tracks.map(track => {
+                const dateParts = track.date.split(' ');
+                return {
+                    ...track,
+                    day: dateParts[0],
+                    month: dateParts[1],
+                    year: dateParts[2]
+                };
+            });
+        }
+
+        // Function to populate month and year dropdowns
+        function populateFilters() {
+            const monthSelect = document.getElementById('month-select');
+            const yearSelect = document.getElementById('year-select');
+
+            const months = [...new Set(allTracks.map(track => track.month))];
+            const years = [...new Set(allTracks.map(track => track.year))];
+
+            // Sort months in chronological order
+            const monthOrder = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"];
+            months.sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
+
+            // Populate months
+            months.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+
+            // Sort years descending
+            years.sort((a, b) => b - a);
+
+            // Populate years
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+        }
+
+        // Function to update filters and refresh track list
+        function updateFilters() {
+            const selectedMonth = document.getElementById('month-select').value;
+            const selectedYear = document.getElementById('year-select').value;
+
+            filteredTracks = allTracks.filter(track => {
+                const monthMatch = selectedMonth === 'all' || track.month === selectedMonth;
+                const yearMatch = selectedYear === 'all' || track.year === selectedYear;
+                return monthMatch && yearMatch;
+            });
+
+            if (filteredTracks.length === 0) {
+                alert('No tracks found for the selected month and year.');
+                return;
+            }
+
+            previousIndices = [];
+            currentIndex = getRandomIndex();
+            loadTrack(currentIndex);
+        }
+
+        // Function to get a random index different from the current one
+        function getRandomIndex() {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * filteredTracks.length);
+            } while (randomIndex === currentIndex && filteredTracks.length > 1);
+            return randomIndex;
+        }
+
+        // Function to decode HTML entities in track names
+        function decodeHtmlEntities(text) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = text;
+            return txt.value;
+        }
+
+        // Function to load a track and update player, info, and image
+        function loadTrack(index) {
+            const track = filteredTracks[index];
+            player.src = track.url;
+            document.getElementById("song-title").innerText = decodeHtmlEntities(track.name);
+            document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
+            document.getElementById("cover-image").src = getRandomItem(imageFiles);
+            updateProgressBar(); // Reset progress bar
+            player.play();
+        }
+
+        // Function to get a random item from an array
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Update progress bar as audio plays
+        function updateProgressBar() {
+            const progressBar = document.getElementById("progress-bar");
+            const duration = player.duration;
+            const currentTime = player.currentTime;
+            const percent = (currentTime / duration) * 100;
+            progressBar.style.width = percent + '%';
+        }
+
+        // Seek audio when progress bar is clicked
+        document.getElementById("progress-container").addEventListener('click', function(event) {
+            const progressContainer = this;
+            const rect = progressContainer.getBoundingClientRect();
+            const offsetX = event.clientX - rect.left;
+            const totalWidth = rect.width;
+            const percent = offsetX / totalWidth;
+            player.currentTime = percent * player.duration;
+        });
+
+        // Update progress bar continuously
+        player.addEventListener('timeupdate', updateProgressBar);
+
+        // Update play/pause button based on audio state
+        player.addEventListener('play', function() {
+            document.getElementById("play-pause-button").innerHTML = "⏸️";
+        });
+        player.addEventListener('pause', function() {
+            document.getElementById("play-pause-button").innerHTML = "▶️";
+        });
+
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (player.paused) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        }
+
+        // Autoplay the next track when the current one ends
+        player.addEventListener("ended", nextTrack);
+
+        // Load the previous track
+        function prevTrack() {
+            if (previousIndices.length > 1) {
+                previousIndices.pop(); // Remove current track index
+                currentIndex = previousIndices.pop(); // Get the previous track index
+                loadTrack(currentIndex);
+                previousIndices.push(currentIndex); // Push it back as current track
+            } else {
+                // If no previous track, just reload current
+                loadTrack(currentIndex);
+            }
+        }
+
+        // Load the next random track
+        function nextTrack() {
+            previousIndices.push(currentIndex); // Save current index before changing
+            currentIndex = getRandomIndex();
+            loadTrack(currentIndex);
+            previousIndices.push(currentIndex);
+        }
+
+        // Keyboard controls for navigation
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "ArrowRight") { // Right arrow for next
+                nextTrack();
+            } else if (event.key === "ArrowLeft") { // Left arrow for previous
+                prevTrack();
+            } else if (event.key === " ") { // Spacebar for play/pause
+                event.preventDefault(); // Prevent page scrolling
+                togglePlayPause();
+            }
+        });
+
+        // Initialize the player on page load
+        window.onload = function() {
+            initializeTracks();
+            populateFilters();
+            filteredTracks = allTracks.slice(); // Start with all tracks
+            currentIndex = getRandomIndex();
+            loadTrack(currentIndex);
+        };
+    </script>
+</body>
+</html>
