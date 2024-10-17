@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Music Player with Date Filter</title>
+    <title>Music Player with Date Filter and Track List</title>
     <!-- Include Google Fonts Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
@@ -109,6 +109,34 @@
             object-fit: contain;
         }
 
+        /* Track list container */
+        .track-list-container {
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .track-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .track-list li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ccc;
+            color: #000;
+        }
+
+        .track-list li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .track-list .active {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
         /* Hide the audio player controls */
         #audio-player {
             display: none;
@@ -155,6 +183,13 @@
         <img id="cover-image" src="https://via.placeholder.com/600x400" alt="Cover Image">
     </div>
 
+    <!-- Track list -->
+    <div class="track-list-container">
+        <ul class="track-list" id="track-list">
+            <!-- Track items will be populated dynamically -->
+        </ul>
+    </div>
+
     <!-- Hidden audio player -->
     <audio id="audio-player" autoplay></audio>
 
@@ -164,8 +199,6 @@
             'https://leightondigital.b-cdn.net/mp3/ypr.png',
             'https://leightondigital.b-cdn.net/mp3/unnamed.png',
             'https://leightondigital.b-cdn.net/mp3/turt.png',
-            'https://leightondigital.b-cdn.net/mp3/image1.png',
-            'https://leightondigital.b-cdn.net/mp3/image2.png',
             // Add the rest of your image URLs here
         ];
 
@@ -176,8 +209,6 @@
             {url: "https://leightondigital.b-cdn.net/a%20new%20obscurity.mp3", name: "Juanpablo &amp; Sneaker - A New Obscurity", date: "17 July 2015"},
             {url: "https://leightondigital.b-cdn.net/Achievement%20Rallies%20Success.mp3", name: "Compassion Crew - Achievement Rallies Success", date: "17 July 2015"},
             {url: "https://leightondigital.b-cdn.net/Air.mp3", name: "Point G - Air", date: "27 June 2015"},
-            {url: "https://leightondigital.b-cdn.net/Another%20Example.mp3", name: "Artist Name - Another Example", date: "05 May 2016"},
-            {url: "https://leightondigital.b-cdn.net/Sample%20Track.mp3", name: "Sample Artist - Sample Track", date: "12 December 2017"},
             // Add the rest of your track objects here
         ];
 
@@ -251,8 +282,41 @@
             }
 
             previousIndices = [];
-            currentIndex = getRandomIndex();
+            currentIndex = 0; // Reset to first track
+            populateTrackList();
             loadTrack(currentIndex);
+        }
+
+        // Function to populate the track list
+        function populateTrackList() {
+            const trackListElement = document.getElementById('track-list');
+            trackListElement.innerHTML = ''; // Clear existing list
+
+            filteredTracks.forEach((track, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = decodeHtmlEntities(track.name);
+                listItem.dataset.index = index;
+                listItem.addEventListener('click', function() {
+                    previousIndices.push(currentIndex);
+                    currentIndex = parseInt(this.dataset.index);
+                    loadTrack(currentIndex);
+                    highlightActiveTrack();
+                });
+                trackListElement.appendChild(listItem);
+            });
+
+            highlightActiveTrack();
+        }
+
+        // Function to highlight the active track in the list
+        function highlightActiveTrack() {
+            const trackItems = document.querySelectorAll('.track-list li');
+            trackItems.forEach(item => {
+                item.classList.remove('active');
+                if (parseInt(item.dataset.index) === currentIndex) {
+                    item.classList.add('active');
+                }
+            });
         }
 
         // Function to get a random index different from the current one
@@ -280,6 +344,7 @@
             document.getElementById("cover-image").src = getRandomItem(imageFiles);
             updateProgressBar(); // Reset progress bar
             player.play();
+            highlightActiveTrack();
         }
 
         // Function to get a random item from an array
@@ -331,23 +396,24 @@
 
         // Load the previous track
         function prevTrack() {
-            if (previousIndices.length > 1) {
-                previousIndices.pop(); // Remove current track index
-                currentIndex = previousIndices.pop(); // Get the previous track index
+            if (previousIndices.length > 0) {
+                currentIndex = previousIndices.pop();
                 loadTrack(currentIndex);
-                previousIndices.push(currentIndex); // Push it back as current track
             } else {
-                // If no previous track, just reload current
+                // If no previous track, reload current
                 loadTrack(currentIndex);
             }
         }
 
-        // Load the next random track
+        // Load the next track
         function nextTrack() {
-            previousIndices.push(currentIndex); // Save current index before changing
-            currentIndex = getRandomIndex();
-            loadTrack(currentIndex);
             previousIndices.push(currentIndex);
+            if (currentIndex < filteredTracks.length - 1) {
+                currentIndex++;
+            } else {
+                currentIndex = 0; // Loop back to the first track
+            }
+            loadTrack(currentIndex);
         }
 
         // Keyboard controls for navigation
@@ -367,7 +433,8 @@
             initializeTracks();
             populateFilters();
             filteredTracks = allTracks.slice(); // Start with all tracks
-            currentIndex = getRandomIndex();
+            populateTrackList();
+            currentIndex = 0;
             loadTrack(currentIndex);
         };
     </script>
