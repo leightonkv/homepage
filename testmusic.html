@@ -61,6 +61,13 @@
             height: 100%;
         }
 
+        /* Controls and Filters */
+        .controls-filters {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         /* Controls */
         .controls {
             display: flex;
@@ -70,10 +77,28 @@
         .controls button {
             background: none;
             border: none;
-            font-size: 1.5em;
+            font-size: 1em;
             cursor: pointer;
-            padding: 0 10px;
+            padding: 5px 10px;
             color: #000;
+            margin-right: 5px;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .filters label, .filters select {
+            margin-right: 10px;
+            font-size: 0.9em;
+            color: #000;
+        }
+
+        .filters select {
+            padding: 5px;
         }
 
         /* Image container */
@@ -117,27 +142,21 @@
             font-weight: bold;
         }
 
-        /* Year filter container */
-        .year-filter-container {
-            padding: 10px 20px 20px 20px;
-            background-color: #fff;
-            text-align: center;
-        }
-
-        .year-filter-container select {
-            padding: 5px;
-            font-size: 1em;
-            margin-top: 10px;
-        }
-
         /* Hide the audio player controls */
         #audio-player {
             display: none;
         }
+
+        @media (max-width: 600px) {
+            .filters {
+                flex-basis: 100%;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header with song info, progress bar, and controls -->
+    <!-- Header with song info, progress bar, controls, and filters -->
     <div class="header">
         <!-- Song info -->
         <div class="song-info">
@@ -148,11 +167,29 @@
         <div class="progress-container" id="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
-        <!-- Controls -->
-        <div class="controls">
-            <button onclick="prevTrack()">⏮️</button>
-            <button onclick="togglePlayPause()" id="play-pause-button">⏸️</button>
-            <button onclick="nextTrack()">⏭️</button>
+        <!-- Controls and Filters -->
+        <div class="controls-filters">
+            <!-- Controls -->
+            <div class="controls">
+                <button onclick="prevTrack()">⏮️</button>
+                <button onclick="togglePlayPause()" id="play-pause-button">⏸️</button>
+                <button onclick="playRandomTrack()">RANDOM</button>
+                <button onclick="nextTrack()">⏭️</button>
+            </div>
+            <!-- Filters -->
+            <div class="filters">
+                <label for="month-select">Month:</label>
+                <select id="month-select" onchange="updateFilters()">
+                    <option value="all">All Months</option>
+                    <!-- Months will be populated dynamically -->
+                </select>
+
+                <label for="year-select">Year:</label>
+                <select id="year-select" onchange="updateFilters()">
+                    <option value="all">All Years</option>
+                    <!-- Years will be populated dynamically -->
+                </select>
+            </div>
         </div>
     </div>
 
@@ -166,15 +203,6 @@
         <ul class="track-list" id="track-list">
             <!-- Track items will be populated dynamically -->
         </ul>
-    </div>
-
-    <!-- Year filter at the bottom -->
-    <div class="year-filter-container">
-        <label for="year-select">Year:</label>
-        <select id="year-select" onchange="updateFilters()">
-            <option value="all">All Years</option>
-            <!-- Years will be populated dynamically -->
-        </select>
     </div>
 
     <!-- Hidden audio player -->
@@ -1963,27 +1991,45 @@ const tracks = [
 ];
 
 
-        let allTracks = []; // Will contain tracks with added 'year' property
-        let filteredTracks = []; // Tracks after filtering by year
+        let allTracks = []; // Will contain tracks with added 'month' and 'year' properties
+        let filteredTracks = []; // Tracks after filtering by month and year
         let currentIndex = 0;
 
         const player = document.getElementById("audio-player");
 
-        // Function to initialize the tracks with 'year'
+        // Function to initialize the tracks with 'month' and 'year'
         function initializeTracks() {
             allTracks = tracks.map(track => {
                 const dateParts = track.date.split(' ');
                 return {
                     ...track,
+                    day: dateParts[0],
+                    month: dateParts[1],
                     year: dateParts[2]
                 };
             });
         }
 
-        // Function to populate the year dropdown
-        function populateYearFilter() {
+        // Function to populate the month and year dropdowns
+        function populateFilters() {
+            const monthSelect = document.getElementById('month-select');
             const yearSelect = document.getElementById('year-select');
+
+            const months = [...new Set(allTracks.map(track => track.month))];
             const years = [...new Set(allTracks.map(track => track.year))];
+
+            // Sort months in chronological order
+            const monthOrder = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"];
+            months.sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
+
+            // Populate months
+            months.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
 
             // Sort years descending
             years.sort((a, b) => b - a);
@@ -1999,14 +2045,17 @@ const tracks = [
 
         // Function to update filters and refresh track list
         function updateFilters() {
+            const selectedMonth = document.getElementById('month-select').value;
             const selectedYear = document.getElementById('year-select').value;
 
             filteredTracks = allTracks.filter(track => {
-                return selectedYear === 'all' || track.year === selectedYear;
+                const monthMatch = selectedMonth === 'all' || track.month === selectedMonth;
+                const yearMatch = selectedYear === 'all' || track.year === selectedYear;
+                return monthMatch && yearMatch;
             });
 
             if (filteredTracks.length === 0) {
-                alert('No tracks found for the selected year.');
+                alert('No tracks found for the selected month and year.');
                 return;
             }
 
@@ -2114,6 +2163,15 @@ const tracks = [
             }
         }
 
+        // Play a random track from the entire list
+        function playRandomTrack() {
+            const randomIndex = Math.floor(Math.random() * allTracks.length);
+            filteredTracks = allTracks.slice(); // Reset to all tracks
+            populateTrackList();
+            currentIndex = randomIndex;
+            loadTrack(currentIndex);
+        }
+
         // Load the previous track
         function prevTrack() {
             if (currentIndex > 0) {
@@ -2152,7 +2210,7 @@ const tracks = [
         // Initialize the player on page load
         window.onload = function() {
             initializeTracks();
-            populateYearFilter();
+            populateFilters();
             filteredTracks = allTracks.slice(); // Start with all tracks
             populateTrackList();
             currentIndex = 0;
