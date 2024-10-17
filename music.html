@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Music Player</title>
+    <title>Random Music Player</title>
     <!-- Include Google Fonts Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
     <style>
@@ -127,7 +127,6 @@
 
     <!-- Hidden audio player -->
     <audio id="audio-player" autoplay></audio>
-
     
     <script>
         // Array of image files to select from randomly
@@ -1912,11 +1911,18 @@ const tracks = [
 ];
 
 
-        let currentIndex;
+    let currentIndex;
+        let previousIndices = []; // To keep track of played tracks for "Previous" button
 
-        // Function to get a random item from an array
-        function getRandomItem(array) {
-            return array[Math.floor(Math.random() * array.length)];
+        const player = document.getElementById("audio-player");
+
+        // Function to get a random index different from the current one
+        function getRandomIndex() {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * tracks.length);
+            } while (randomIndex === currentIndex && tracks.length > 1);
+            return randomIndex;
         }
 
         // Function to decode HTML entities in track names
@@ -1928,9 +1934,7 @@ const tracks = [
 
         // Function to load a track and update player, info, and image
         function loadTrack(index) {
-            const player = document.getElementById("audio-player");
             const track = tracks[index];
-
             player.src = track.url;
             document.getElementById("song-title").innerText = decodeHtmlEntities(track.name);
             document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
@@ -1939,11 +1943,14 @@ const tracks = [
             player.play(); // Ensure the audio starts playing
         }
 
+        // Function to get a random item from an array
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
         // Update progress bar as audio plays
         function updateProgressBar() {
-            const player = document.getElementById("audio-player");
             const progressBar = document.getElementById("progress-bar");
-
             const duration = player.duration;
             const currentTime = player.currentTime;
             const percent = (currentTime / duration) * 100;
@@ -1952,7 +1959,6 @@ const tracks = [
 
         // Seek audio when progress bar is clicked
         document.getElementById("progress-container").addEventListener('click', function(event) {
-            const player = document.getElementById("audio-player");
             const progressContainer = this;
             const rect = progressContainer.getBoundingClientRect();
             const offsetX = event.clientX - rect.left;
@@ -1962,10 +1968,9 @@ const tracks = [
         });
 
         // Update progress bar continuously
-        document.getElementById("audio-player").addEventListener('timeupdate', updateProgressBar);
+        player.addEventListener('timeupdate', updateProgressBar);
 
         // Update play/pause button based on audio state
-        const player = document.getElementById("audio-player");
         player.addEventListener('play', function() {
             document.getElementById("play-pause-button").innerHTML = "⏸️";
         });
@@ -1984,7 +1989,7 @@ const tracks = [
 
         // Select a random track on page load
         window.onload = function() {
-            currentIndex = Math.floor(Math.random() * tracks.length); // Randomize the starting track
+            currentIndex = getRandomIndex();
             loadTrack(currentIndex);
         };
 
@@ -1993,14 +1998,23 @@ const tracks = [
 
         // Load the previous track
         function prevTrack() {
-            currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
-            loadTrack(currentIndex);
+            if (previousIndices.length > 1) {
+                previousIndices.pop(); // Remove current track index
+                currentIndex = previousIndices.pop(); // Get the previous track index
+                loadTrack(currentIndex);
+                previousIndices.push(currentIndex); // Push it back as current track
+            } else {
+                // If no previous track, just reload current
+                loadTrack(currentIndex);
+            }
         }
 
-        // Load the next track
+        // Load the next random track
         function nextTrack() {
-            currentIndex = (currentIndex + 1) % tracks.length;
+            previousIndices.push(currentIndex); // Save current index before changing
+            currentIndex = getRandomIndex();
             loadTrack(currentIndex);
+            previousIndices.push(currentIndex);
         }
 
         // Keyboard controls for navigation
