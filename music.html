@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minimal Music Player</title>
     <!-- Include Google Fonts Roboto -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -115,6 +115,7 @@
         <!-- Controls -->
         <div class="controls">
             <button onclick="prevTrack()">⏮️</button>
+            <button onclick="togglePlayPause()" id="play-pause-button">⏸️</button>
             <button onclick="nextTrack()">⏭️</button>
         </div>
     </div>
@@ -126,6 +127,8 @@
 
     <!-- Hidden audio player -->
     <audio id="audio-player" autoplay></audio>
+
+    
     <script>
         // Array of image files to select from randomly
         const imageFiles = [
@@ -1909,11 +1912,18 @@ const tracks = [
 ];
 
 
-       let currentIndex;
+        let currentIndex;
 
         // Function to get a random item from an array
         function getRandomItem(array) {
             return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Function to decode HTML entities in track names
+        function decodeHtmlEntities(text) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = text;
+            return txt.value;
         }
 
         // Function to load a track and update player, info, and image
@@ -1922,10 +1932,11 @@ const tracks = [
             const track = tracks[index];
 
             player.src = track.url;
-            document.getElementById("song-title").innerText = track.name;
+            document.getElementById("song-title").innerText = decodeHtmlEntities(track.name);
             document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
             document.getElementById("cover-image").src = getRandomItem(imageFiles); // Assign a random image
             updateProgressBar(); // Reset progress bar
+            player.play(); // Ensure the audio starts playing
         }
 
         // Update progress bar as audio plays
@@ -1953,28 +1964,43 @@ const tracks = [
         // Update progress bar continuously
         document.getElementById("audio-player").addEventListener('timeupdate', updateProgressBar);
 
+        // Update play/pause button based on audio state
+        const player = document.getElementById("audio-player");
+        player.addEventListener('play', function() {
+            document.getElementById("play-pause-button").innerHTML = "⏸️";
+        });
+        player.addEventListener('pause', function() {
+            document.getElementById("play-pause-button").innerHTML = "▶️";
+        });
+
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (player.paused) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        }
+
         // Select a random track on page load
         window.onload = function() {
             currentIndex = Math.floor(Math.random() * tracks.length); // Randomize the starting track
             loadTrack(currentIndex);
-            document.getElementById("audio-player").play();
         };
 
         // Autoplay the next track when the current one ends
-        document.getElementById("audio-player").addEventListener("ended", nextTrack);
+        player.addEventListener("ended", nextTrack);
 
         // Load the previous track
         function prevTrack() {
             currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
             loadTrack(currentIndex);
-            document.getElementById("audio-player").play();
         }
 
         // Load the next track
         function nextTrack() {
             currentIndex = (currentIndex + 1) % tracks.length;
             loadTrack(currentIndex);
-            document.getElementById("audio-player").play();
         }
 
         // Keyboard controls for navigation
@@ -1983,6 +2009,9 @@ const tracks = [
                 nextTrack();
             } else if (event.key === "ArrowLeft") { // Left arrow for previous
                 prevTrack();
+            } else if (event.key === " ") { // Spacebar for play/pause
+                event.preventDefault(); // Prevent page scrolling
+                togglePlayPause();
             }
         });
     </script>
