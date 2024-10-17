@@ -12,43 +12,72 @@
             margin: 0;
             padding: 0;
             position: relative;
-            background-color: #fff; /* Optional: set background color */
+            background-color: #fff;
         }
 
-        /* Song title and info in the top left */
-        .top-left {
+        /* Header container with white background overlay */
+        .header {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            color: #000; /* Text color */
-            text-align: left;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1; /* Ensure header is above the image */
+        }
+
+        /* Song info */
+        .song-info {
+            flex: 1; /* Take up available space */
         }
 
         .song-title {
             font-weight: bold;
-            font-size: 1.5em;
+            font-size: 1.2em;
             margin: 0;
+            color: #000;
         }
 
         .post-date {
-            font-size: 1em;
+            font-size: 0.9em;
             margin: 5px 0 0;
+            color: #000;
         }
 
-        /* Controls in the top right */
-        .top-right {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        /* Progress bar container */
+        .progress-container {
+            flex: 2;
+            height: 10px;
+            background-color: #ccc;
+            cursor: pointer;
+            margin: 0 20px;
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
         }
 
-        .top-right button {
+        /* Progress bar */
+        .progress-bar {
+            background-color: #000;
+            width: 0%;
+            height: 100%;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .controls button {
             background: none;
             border: none;
             font-size: 1.5em;
             cursor: pointer;
             padding: 0 10px;
-            color: #000; /* Button color */
+            color: #000;
         }
 
         /* Centered image */
@@ -56,13 +85,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
         }
 
         .image-container img {
             max-width: 100%;
-            max-height: 100vh; /* Adjust image to viewport height */
-            object-fit: contain; /* Maintain aspect ratio */
+            max-height: 100vh;
+            object-fit: contain;
         }
 
         /* Hide the audio player controls */
@@ -72,16 +101,22 @@
     </style>
 </head>
 <body>
-    <!-- Song title and info -->
-    <div class="top-left">
-        <p class="song-title" id="song-title"></p>
-        <p class="post-date" id="post-date"></p>
-    </div>
-
-    <!-- Controls -->
-    <div class="top-right">
-        <button onclick="prevTrack()">⏮️</button>
-        <button onclick="nextTrack()">⏭️</button>
+    <!-- Header with song info, progress bar, and controls -->
+    <div class="header">
+        <!-- Song info -->
+        <div class="song-info">
+            <p class="song-title" id="song-title"></p>
+            <p class="post-date" id="post-date"></p>
+        </div>
+        <!-- Progress bar -->
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <!-- Controls -->
+        <div class="controls">
+            <button onclick="prevTrack()">⏮️</button>
+            <button onclick="nextTrack()">⏭️</button>
+        </div>
     </div>
 
     <!-- Centered image -->
@@ -91,7 +126,6 @@
 
     <!-- Hidden audio player -->
     <audio id="audio-player" autoplay></audio>
-
     <script>
         // Array of image files to select from randomly
         const imageFiles = [
@@ -1875,7 +1909,7 @@ const tracks = [
 ];
 
 
-        let currentIndex;
+       let currentIndex;
 
         // Function to get a random item from an array
         function getRandomItem(array) {
@@ -1891,12 +1925,39 @@ const tracks = [
             document.getElementById("song-title").innerText = track.name;
             document.getElementById("post-date").innerText = `Posted on: ${track.date}`;
             document.getElementById("cover-image").src = getRandomItem(imageFiles); // Assign a random image
+            updateProgressBar(); // Reset progress bar
         }
+
+        // Update progress bar as audio plays
+        function updateProgressBar() {
+            const player = document.getElementById("audio-player");
+            const progressBar = document.getElementById("progress-bar");
+
+            const duration = player.duration;
+            const currentTime = player.currentTime;
+            const percent = (currentTime / duration) * 100;
+            progressBar.style.width = percent + '%';
+        }
+
+        // Seek audio when progress bar is clicked
+        document.getElementById("progress-container").addEventListener('click', function(event) {
+            const player = document.getElementById("audio-player");
+            const progressContainer = this;
+            const rect = progressContainer.getBoundingClientRect();
+            const offsetX = event.clientX - rect.left;
+            const totalWidth = rect.width;
+            const percent = offsetX / totalWidth;
+            player.currentTime = percent * player.duration;
+        });
+
+        // Update progress bar continuously
+        document.getElementById("audio-player").addEventListener('timeupdate', updateProgressBar);
 
         // Select a random track on page load
         window.onload = function() {
             currentIndex = Math.floor(Math.random() * tracks.length); // Randomize the starting track
             loadTrack(currentIndex);
+            document.getElementById("audio-player").play();
         };
 
         // Autoplay the next track when the current one ends
@@ -1926,3 +1987,4 @@ const tracks = [
         });
     </script>
 </body>
+</html>
