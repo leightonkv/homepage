@@ -167,8 +167,6 @@
         ];
 
         let currentIndex = 0;
-        let isScrolling = false;
-        const scrollTimeout = 150; // Time in milliseconds to wait after scrolling stops
 
         const player = document.getElementById("audio-player");
         const songInfoContainer = document.getElementById("song-info-container");
@@ -262,8 +260,8 @@
             event.stopPropagation(); // Prevent other click events
             const randomIndex = Math.floor(Math.random() * tracks.length);
             currentIndex = randomIndex;
-            scrollToSongItem(currentIndex);
             loadTrack(currentIndex);
+            scrollToSongItem(currentIndex);
         }
 
         // Load the previous track
@@ -274,8 +272,8 @@
             } else {
                 currentIndex = tracks.length - 1; // Loop back to the last track
             }
-            scrollToSongItem(currentIndex);
             loadTrack(currentIndex);
+            scrollToSongItem(currentIndex);
         }
 
         // Load the next track
@@ -286,8 +284,8 @@
             } else {
                 currentIndex = 0; // Loop back to the first track
             }
-            scrollToSongItem(currentIndex);
             loadTrack(currentIndex);
+            scrollToSongItem(currentIndex);
         }
 
         // Autoplay the next track when the current one ends
@@ -340,41 +338,12 @@
             });
         }
 
-        // Scroll handling
-        let scrollTimeoutId;
-
-        songInfoContainer.addEventListener('scroll', function() {
-            if (scrollTimeoutId) {
-                clearTimeout(scrollTimeoutId);
-            }
-            scrollTimeoutId = setTimeout(function() {
-                const songItems = document.querySelectorAll('.song-item');
-                let closestItem = null;
-                let closestDistance = Infinity;
-
-                songItems.forEach((item, index) => {
-                    const rect = item.getBoundingClientRect();
-                    const containerRect = songInfoContainer.getBoundingClientRect();
-                    const distance = Math.abs(rect.top - containerRect.top);
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closestItem = { item, index };
-                    }
-                });
-
-                if (closestItem && currentIndex !== closestItem.index) {
-                    currentIndex = closestItem.index;
-                    loadTrack(currentIndex);
-                }
-            }, scrollTimeout);
-        });
-
         // Function to scroll to a specific song item
         function scrollToSongItem(index) {
             const songItems = document.querySelectorAll('.song-item');
             const targetItem = songItems[index];
             if (targetItem) {
-                targetItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                targetItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
 
